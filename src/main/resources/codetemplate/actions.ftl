@@ -4,27 +4,22 @@
         <#if action.name?? && action.name!=''>
             <#lt>    // ${action.name}
         </#if>
-        <#lt>    public <#rt>
         <#-- 返回值 -->
-        <#if action.hasReturnValue==1>
-            <#lt>Object <#rt>
-        <#else>
-            <#lt>void <#rt>
-        </#if>
+        <#lt>    public ${action.returnValue} <#rt>
         <#-- 方法名 -->
         <#lt>${methodPrefix}${action.id?c}<#rt>
         <#lt>(<#rt>
         <#-- 方法参数 -->
         <#if action.params?? && (action.params?size>0)>
             <#list action.params as param>
-                <#lt>Object ${param.name}<#sep>, <#rt>
+                <#lt>${param.type} ${param.name}<#sep>, <#rt>
             </#list>
         </#if>
         <#lt>) throws Throwable {
         <#-- 方法体 -->
         <#-- 基础action -->
         <#if action.type==1>
-            <#lt>        <#if action.hasReturnValue==1>return </#if>${action.invoke}(<#rt>
+            <#lt>        <#if action.returnValue!='void'>return </#if>${action.invoke}(<#rt>
             <#if action.params?? && (action.params?size>0)>
                 <#list action.params as param>
                     <#lt>${param.name}<#sep>, <#rt>
@@ -35,7 +30,7 @@
             <#-- 方法里的局部变量 -->
             <#if action.localVars?? && (action.localVars?size>0)>
                 <#list action.localVars as localVar>
-                    <#lt>        Object ${localVar.name} = ${localVar.value};
+                    <#lt>        ${localVar.type} ${localVar.name} = ${localVar.value};
                 </#list>
             </#if>
             <#-- 方法里的步骤 -->

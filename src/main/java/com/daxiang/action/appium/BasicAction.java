@@ -6,8 +6,6 @@ import com.daxiang.core.MobileDevice;
 import com.daxiang.core.MobileDeviceHolder;
 import com.daxiang.core.android.AndroidUtil;
 import com.daxiang.core.ios.IosUtil;
-import com.daxiang.utils.BamsUtil;
-import com.daxiang.utils.function.RandomPhoneFunction;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.TouchAction;
@@ -15,15 +13,11 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
@@ -57,8 +51,8 @@ public class BasicAction {
      *
      * @param javaCode
      */
-    public void executeJavaCode(Object javaCode) {
-        Assert.notNull(javaCode, "javaCode不能为空");
+    public void executeJavaCode(String javaCode) {
+        Assert.hasText(javaCode, "javaCode不能为空");
     }
 
     /**
@@ -68,14 +62,13 @@ public class BasicAction {
      * @param packageName
      * @throws Exception
      */
-    public void uninstallApp(Object packageName) throws Exception {
-        Assert.notNull(packageName, "apk包名或ios bundleId不能为空");
-        String _packageName = (String) packageName;
+    public void uninstallApp(String packageName) throws Exception {
+        Assert.hasText(packageName, "apk包名或ios bundleId不能为空");
 
         if (driver instanceof AndroidDriver) {
-            AndroidUtil.uninstallApk(MobileDeviceHolder.getIDeviceByAppiumDriver(driver), _packageName);
+            AndroidUtil.uninstallApk(MobileDeviceHolder.getIDeviceByAppiumDriver(driver), packageName);
         } else {
-            IosUtil.uninstallApp(driver, _packageName);
+            IosUtil.uninstallApp(driver, packageName);
         }
     }
 
@@ -86,11 +79,10 @@ public class BasicAction {
      * @param appDownloadUrl
      * @throws Exception
      */
-    public void installApp(Object appDownloadUrl) throws Exception {
-        Assert.notNull(appDownloadUrl, "appDownloadUrl不能为空");
-        String _appDownloadUrl = (String) appDownloadUrl;
+    public void installApp(String appDownloadUrl) throws Exception {
+        Assert.hasText(appDownloadUrl, "appDownloadUrl不能为空");
 
-        MobileDeviceHolder.getMobileDeviceByAppiumDriver(driver).installApp(_appDownloadUrl);
+        MobileDeviceHolder.getMobileDeviceByAppiumDriver(driver).installApp(appDownloadUrl);
     }
 
     /**
@@ -100,10 +92,10 @@ public class BasicAction {
      * @param packageName
      * @throws Exception
      */
-    public void clearApkData(Object packageName) throws Exception {
-        Assert.notNull(packageName, "包名不能为空");
+    public void clearApkData(String packageName) throws Exception {
+        Assert.hasText(packageName, "包名不能为空");
 
-        AndroidUtil.clearApkData(MobileDeviceHolder.getIDeviceByAppiumDriver(driver), (String) packageName);
+        AndroidUtil.clearApkData(MobileDeviceHolder.getIDeviceByAppiumDriver(driver), packageName);
     }
 
     /**
@@ -114,11 +106,11 @@ public class BasicAction {
      * @param launchActivity
      * @throws Exception
      */
-    public void restartApk(Object packageName, Object launchActivity) throws Exception {
-        Assert.notNull(packageName, "包名不能为空");
-        Assert.notNull(launchActivity, "启动Activity不能为空");
+    public void restartApk(String packageName, String launchActivity) throws Exception {
+        Assert.hasText(packageName, "包名不能为空");
+        Assert.hasText(launchActivity, "启动Activity不能为空");
 
-        AndroidUtil.restartApk(MobileDeviceHolder.getIDeviceByAppiumDriver(driver), (String) packageName, (String) launchActivity);
+        AndroidUtil.restartApk(MobileDeviceHolder.getIDeviceByAppiumDriver(driver), packageName, launchActivity);
     }
 
     /**
@@ -127,12 +119,11 @@ public class BasicAction {
      *
      * @param bundleId
      */
-    public void restartIosApp(Object bundleId) {
-        Assert.notNull(bundleId, "bundleId不能为空");
-        String _bundleId = (String) bundleId;
+    public void restartIosApp(String bundleId) {
+        Assert.hasText(bundleId, "bundleId不能为空");
 
-        IosUtil.terminateApp(driver, _bundleId);
-        IosUtil.launchApp(driver, _bundleId);
+        IosUtil.terminateApp(driver, bundleId);
+        IosUtil.launchApp(driver, bundleId);
     }
 
     /**
@@ -143,7 +134,7 @@ public class BasicAction {
      * @param value
      * @return
      */
-    public WebElement click(Object findBy, Object value) {
+    public WebElement click(String findBy, String value) {
         WebElement element = findElement(findBy, value);
         element.click();
         return element;
@@ -157,11 +148,11 @@ public class BasicAction {
      * @param value
      * @return
      */
-    public WebElement findElement(Object findBy, Object value) {
-        Assert.notNull(findBy, "findBy不能为空");
-        Assert.notNull(value, "value不能为空");
+    public WebElement findElement(String findBy, String value) {
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
 
-        return driver.findElement(getBy((String) findBy, (String) value));
+        return driver.findElement(getBy(findBy, value));
     }
 
     /**
@@ -172,11 +163,11 @@ public class BasicAction {
      * @param value
      * @return 返回所有匹配的元素
      */
-    public List<WebElement> findElements(Object findBy, Object value) {
-        Assert.notNull(findBy, "findBy不能为空");
-        Assert.notNull(value, "value不能为空");
+    public List<WebElement> findElements(String findBy, String value) {
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
 
-        return driver.findElements(getBy((String) findBy, (String) value));
+        return driver.findElements(getBy(findBy, value));
     }
 
     /**
@@ -188,13 +179,13 @@ public class BasicAction {
      * @param content
      * @return
      */
-    public WebElement sendKeys(Object findBy, Object value, Object content) {
-        Assert.notNull(findBy, "findBy不能为空");
-        Assert.notNull(value, "value不能为空");
-        Assert.notNull(content, "content不能为空");
+    public WebElement sendKeys(String findBy, String value, String content) {
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
+        Assert.hasText(content, "content不能为空");
 
-        WebElement element = driver.findElement(getBy((String) findBy, (String) value));
-        element.sendKeys((String) content);
+        WebElement element = driver.findElement(getBy(findBy, value));
+        element.sendKeys(content);
         return element;
     }
 
@@ -204,10 +195,10 @@ public class BasicAction {
      *
      * @param implicitlyWaitTimeInSeconds
      */
-    public void setImplicitlyWaitTime(Object implicitlyWaitTimeInSeconds) {
-        Assert.notNull(implicitlyWaitTimeInSeconds, "隐式等待时间不能为空");
+    public void setImplicitlyWaitTime(String implicitlyWaitTimeInSeconds) {
+        Assert.hasText(implicitlyWaitTimeInSeconds, "隐式等待时间不能为空");
 
-        driver.manage().timeouts().implicitlyWait(Long.parseLong((String) implicitlyWaitTimeInSeconds), TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Long.parseLong(implicitlyWaitTimeInSeconds), TimeUnit.SECONDS);
     }
 
     /**
@@ -219,13 +210,13 @@ public class BasicAction {
      * @param maxWaitTimeInSeconds
      * @return
      */
-    public WebElement waitForElementVisible(Object findBy, Object value, Object maxWaitTimeInSeconds) {
-        Assert.notNull(findBy, "findBy不能为空");
-        Assert.notNull(value, "value不能为空");
-        Assert.notNull(maxWaitTimeInSeconds, "最大等待时间不能为空");
+    public WebElement waitForElementVisible(String findBy, String value, String maxWaitTimeInSeconds) {
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
+        Assert.hasText(maxWaitTimeInSeconds, "最大等待时间不能为空");
 
-        return new WebDriverWait(driver, Long.parseLong((String) maxWaitTimeInSeconds))
-                .until(ExpectedConditions.visibilityOfElementLocated(getBy((String) findBy, (String) value)));
+        return new WebDriverWait(driver, Long.parseLong(maxWaitTimeInSeconds))
+                .until(ExpectedConditions.visibilityOfElementLocated(getBy(findBy, value)));
     }
 
     /**
@@ -235,13 +226,12 @@ public class BasicAction {
      * @param context
      * @return 切换后的context
      */
-    public String switchContext(Object context) {
-        Assert.notNull(context, "context不能为空");
-        String _context = (String) context;
+    public String switchContext(String context) {
+        Assert.hasText(context, "context不能为空");
 
-        if (MobileDevice.NATIVE_CONTEXT.equals(_context)) {
+        if (MobileDevice.NATIVE_CONTEXT.equals(context)) {
             // 切换到原生
-            driver.context(_context);
+            driver.context(context);
         } else {
             Set<String> contexts = driver.getContextHandles();
             log.info("contexts: {}", contexts);
@@ -252,13 +242,13 @@ public class BasicAction {
                     break;
                 }
             }
-            _context = driver.getContext();
-            if (MobileDevice.NATIVE_CONTEXT.equals(_context)) {
+            context = driver.getContext();
+            if (MobileDevice.NATIVE_CONTEXT.equals(context)) {
                 throw new RuntimeException("未检测到webview，无法切换。当前contexts: " + contexts.toString());
             }
         }
 
-        return _context;
+        return context;
     }
 
     /**
@@ -268,9 +258,9 @@ public class BasicAction {
      * @param sleepTimeInSeconds
      * @throws InterruptedException
      */
-    public void sleep(Object sleepTimeInSeconds) throws InterruptedException {
-        Assert.notNull(sleepTimeInSeconds, "休眠时长不能为空");
-        long sleepTime = (long) (Float.parseFloat((String) sleepTimeInSeconds) * 1000);
+    public void sleep(String sleepTimeInSeconds) throws InterruptedException {
+        Assert.hasText(sleepTimeInSeconds, "休眠时长不能为空");
+        long sleepTime = (long) (Float.parseFloat(sleepTimeInSeconds) * 1000);
         Thread.sleep(sleepTime);
     }
 
@@ -281,12 +271,12 @@ public class BasicAction {
      * @param startPoint {"x": 0.5, "y": 0.5} => 屏幕宽/高 1/2的位置
      * @param endPoint
      */
-    public void swipeInScreen(Object startPoint, Object endPoint) {
+    public void swipeInScreen(String startPoint, String endPoint) {
         JSONObject _startPoint;
         JSONObject _endPoint;
         try {
-            _startPoint = JSON.parseObject((String) startPoint);
-            _endPoint = JSON.parseObject((String) endPoint);
+            _startPoint = JSON.parseObject(startPoint);
+            _endPoint = JSON.parseObject(endPoint);
         } catch (Exception e) {
             throw new RuntimeException("startPoint,endPoint格式错误，正确格式: {x:0.5,y:0.5}");
         }
@@ -298,7 +288,7 @@ public class BasicAction {
 
         log.info("滑动屏幕: ({},{}) -> ({},{})", startX, startY, endX, endY);
         new TouchAction(driver)
-                .longPress(PointOption.point(startX, startY))
+                .press(PointOption.point(startX, startY))
                 .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                 .moveTo(PointOption.point(endX, endY))
                 .release()
@@ -316,19 +306,19 @@ public class BasicAction {
      * @param maxSwipeCount
      * @return
      */
-    public WebElement swipeInScreenAndFindElement(Object findBy, Object value, Object startPoint, Object endPoint, Object maxSwipeCount) {
-        Assert.notNull(findBy, "findBy不能为空");
-        Assert.notNull(value, "value不能为空");
-        Assert.notNull(maxSwipeCount, "最大滑动次数不能为空");
+    public WebElement swipeInScreenAndFindElement(String findBy, String value, String startPoint, String endPoint, String maxSwipeCount) {
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
+        Assert.hasText(maxSwipeCount, "最大滑动次数不能为空");
 
-        By by = getBy((String) findBy, (String) value);
+        By by = getBy(findBy, value);
 
         try {
             return driver.findElement(by);
         } catch (Exception e) {
         }
 
-        int _maxSwipeCount = Integer.parseInt((String) maxSwipeCount);
+        int _maxSwipeCount = Integer.parseInt(maxSwipeCount);
 
         for (int i = 0; i < _maxSwipeCount; i++) {
             log.info("开始滑动第{}次屏幕", i + 1);
@@ -346,23 +336,21 @@ public class BasicAction {
      * 17.在容器元素内滑动
      * platform: Android / iOS
      *
-     * @param containerElement
-     * @param startPoint       {"x": 0.5, "y": 0.5} => 容器元素宽/高 1/2的位置
+     * @param container
+     * @param startPoint {"x": 0.5, "y": 0.5} => 容器元素宽/高 1/2的位置
      * @param endPoint
      */
-    public void swipeInContainerElement(Object containerElement, Object startPoint, Object endPoint) {
-        Assert.notNull(containerElement, "容器元素不能为空");
+    public void swipeInContainerElement(WebElement container, String startPoint, String endPoint) {
+        Assert.notNull(container, "容器元素不能为空");
 
         JSONObject _startPoint;
         JSONObject _endPoint;
         try {
-            _startPoint = JSON.parseObject((String) startPoint);
-            _endPoint = JSON.parseObject((String) endPoint);
+            _startPoint = JSON.parseObject(startPoint);
+            _endPoint = JSON.parseObject(endPoint);
         } catch (Exception e) {
             throw new RuntimeException("startPoint,endPoint格式错误，正确格式: {x:0.5,y:0.5}");
         }
-
-        WebElement container = (WebElement) containerElement;
 
         Rectangle containerRect = container.getRect();
         int containerHeight = containerRect.getHeight();
@@ -381,7 +369,7 @@ public class BasicAction {
 
         log.info("在containerElement内滑动: ({},{}) -> ({},{})", startX, startY, endX, endY);
         new TouchAction(driver)
-                .longPress(PointOption.point(startX, startY))
+                .press(PointOption.point(startX, startY))
                 .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                 .moveTo(PointOption.point(endX, endY))
                 .release()
@@ -392,27 +380,25 @@ public class BasicAction {
      * 18.在容器元素内滑动查找元素
      * platform: Android / iOS
      *
-     * @param containerElement
+     * @param container
      * @param findBy
      * @param value
-     * @param startPoint       {"x": 0.5, "y": 0.5} => 容器元素宽/高 1/2的位置
+     * @param startPoint    {"x": 0.5, "y": 0.5} => 容器元素宽/高 1/2的位置
      * @param endPoint
      * @param maxSwipeCount
      * @return
      */
-    public WebElement swipeInContainerElementAndFindElement(Object containerElement, Object findBy, Object value, Object startPoint, Object endPoint, Object maxSwipeCount) {
-        Assert.notNull(containerElement, "容器元素不能为空");
-        Assert.notNull(findBy, "findBy不能为空");
-        Assert.notNull(value, "value不能为空");
-        Assert.notNull(maxSwipeCount, "最大滑动次数不能为空");
+    public WebElement swipeInContainerElementAndFindElement(WebElement container, String findBy, String value, String startPoint, String endPoint, String maxSwipeCount) {
+        Assert.notNull(container, "容器元素不能为空");
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
+        Assert.hasText(maxSwipeCount, "最大滑动次数不能为空");
 
-        By by = getBy((String) findBy, (String) value);
+        By by = getBy(findBy, value);
         try {
             return driver.findElement(by);
         } catch (Exception e) {
         }
-
-        WebElement container = (WebElement) containerElement;
 
         Rectangle containerRect = container.getRect();
         int containerHeight = containerRect.getHeight();
@@ -427,8 +413,8 @@ public class BasicAction {
         JSONObject _startPoint;
         JSONObject _endPoint;
         try {
-            _startPoint = JSON.parseObject((String) startPoint);
-            _endPoint = JSON.parseObject((String) endPoint);
+            _startPoint = JSON.parseObject(startPoint);
+            _endPoint = JSON.parseObject(endPoint);
         } catch (Exception e) {
             throw new RuntimeException("startPoint,endPoint格式错误，正确格式: {x:0.5,y:0.5}");
         }
@@ -438,12 +424,12 @@ public class BasicAction {
         int endX = containerLeftTopX + (int) (_endPoint.getFloat("x") * containerWidth);
         int endY = containerLeftTopY + (int) (_endPoint.getFloat("y") * containerHeight);
 
-        int _maxSwipeCount = Integer.parseInt((String) maxSwipeCount);
+        int _maxSwipeCount = Integer.parseInt(maxSwipeCount);
 
         for (int i = 0; i < _maxSwipeCount; i++) {
             log.info("在containerElement内滑动第{}次: ({},{}) -> ({},{})", i + 1, startX, startY, endX, endY);
             new TouchAction(driver)
-                    .longPress(PointOption.point(startX, startY))
+                    .press(PointOption.point(startX, startY))
                     .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                     .moveTo(PointOption.point(endX, endY))
                     .release()
@@ -470,10 +456,6 @@ public class BasicAction {
             case "xpath":
                 by = MobileBy.xpath(value);
                 break;
-            case "text":
-                value = "new UiSelector().text(\"" + value + "\")";
-                by = MobileBy.AndroidUIAutomator(value);
-                break;
             case "AndroidUIAutomator":
                 // http://appium.io/docs/en/writing-running-appium/android/uiautomator-uiselector/
                 value = value.replaceAll("'", "\"");
@@ -495,69 +477,4 @@ public class BasicAction {
         return by;
     }
 
-    /**
-     * 查询短信验证码
-     *
-     * @param phone
-     * @return
-     */
-    public String queryMsgCode(Object phone) {
-        return BamsUtil.queryMsgCode((String) phone);
-    }
-
-    /**
-     * 手机号添加至黑名单
-     *
-     * @param phone
-     * @return
-     * @throws IOException
-     */
-    public String addPhone2Black(Object phone) throws IOException {
-        return BamsUtil.addPhone2BlackList((String) phone);
-    }
-
-    public Object randomPhone() {
-        return RandomPhoneFunction.randomPhone();
-    }
-
-
-    /**
-     * 发送keycode到android手机执行
-     *
-     * @param androidKeyCode
-     */
-    public void pressKeyCode(Object androidKeyCode) {
-        Assert.notNull(androidKeyCode, "androidKeyCode不能为空");
-        int _androidKeyCode = Integer.parseInt((String) androidKeyCode);
-
-        if (!(driver instanceof AndroidDriver)) {
-            throw new RuntimeException("AppiumDriver不是AndroidDriver");
-        }
-
-        AndroidDriver androidDriver = (AndroidDriver) driver;
-        androidDriver.pressKeyCode(_androidKeyCode);
-    }
-
-    /**
-     * 判断元素是否存在
-     *
-     * @param findBy
-     * @param value
-     * @return
-     */
-    public WebElement elementIsExist(Object findBy, Object value) {
-        WebElement element = driver.findElement(getBy((String) findBy, (String) value));
-        return element;
-    }
-
-    /**
-     * 判断toast是否出现
-     *
-     * @param value
-     * @return
-     */
-    public WebElement toastIsExist(Object value) {
-        String temp_value = String.format("//*[contains(@text, '%s')]", value);
-        return new WebDriverWait(driver,5).until(ExpectedConditions.presenceOfElementLocated(getBy("xpath", temp_value)));
-    }
 }
