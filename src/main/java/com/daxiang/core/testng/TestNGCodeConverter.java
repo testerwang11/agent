@@ -3,6 +3,7 @@ package com.daxiang.core.testng;
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.action.appium.BasicAction;
 import com.daxiang.model.action.*;
+import com.daxiang.utils.FunctionUtil;
 import freemarker.template.TemplateException;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,6 +12,8 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -136,7 +139,10 @@ public class TestNGCodeConverter {
      */
     private void handleGlobalVars() {
         if (!CollectionUtils.isEmpty(globalVars)) {
-            globalVars.forEach(globalVar -> globalVar.setValue(handleValue(globalVar.getValue())));
+            globalVars.forEach(globalVar -> {
+                //globalVar.setValue(handleValue(globalVar.getValue()));
+                globalVar.setValue((String) checkGlobalVars(globalVar.getValue()));
+            });
         }
     }
 
@@ -180,5 +186,26 @@ public class TestNGCodeConverter {
         } else { // 普通字符串
             return "\"" + value + "\"";
         }
+    }
+
+    /**
+     * 检查全局变量是不是方法
+     *
+     * @return
+     */
+    public Object checkGlobalVars(String data) {
+        //String data = "${randomPhone(1)}";
+        String regex = "(\\w*?)\\((([\\w\\\\\\/:\\.\\$\\-]*,?)*)\\)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher m = pattern.matcher(data);
+        while (m.find()) {
+            String funcName = m.group(1);
+            String args = m.group(2);
+            if (FunctionUtil.isFunction(funcName)) {
+                Object value = FunctionUtil.getValue(funcName, args.split(","));
+                return value;
+            }
+        }
+        return data;
     }
 }

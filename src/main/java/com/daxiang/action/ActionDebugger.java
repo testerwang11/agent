@@ -4,6 +4,7 @@ import com.daxiang.core.MobileDeviceHolder;
 import com.daxiang.utils.UUIDUtil;
 import io.appium.java_client.AppiumDriver;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.WebElement;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -28,7 +29,9 @@ public class ActionDebugger {
     public void test() {
         // 以下为要测试的代码
         String context = appiumDriver.getContext();
-        System.out.println(context);
+        System.out.println("=========" + context);
+        WebElement element = appiumDriver.findElementByAccessibilityId("com.yicai.sijibao.dd1:id/account");
+
     }
 
     /**
@@ -36,16 +39,16 @@ public class ActionDebugger {
      * 1. 在平台上使用一台设备
      * 2. 将设备id，赋值给final String deviceId
      * 3. 运行main方法即可
-     *
+     * <p>
      * 提示: final String filePath / final String url 根据实际情况修改
      *
      * @param args
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        final String deviceId = "2dd931856e821196dc2a7e5358519d539c952e29";
-        final String filePath = "/Users/jiangyitao/workspace/IdeaProjects/src/main/java/com/daxiang/action/ActionDebugger.java";
-        final String url = "http://192.168.1.8:10004/action/developer/debug";
+        final String deviceId = "CUTOWSGM99999999";
+        final String filePath = "D:/work/workspace2/agent2/src/main/java/com/daxiang/action/ActionDebugger.java";
+        final String url = "http://192.168.12.122:10004/action/developer/debug";
 
         // 1. 读取ActionDebugger.java
         String code = FileUtils.readFileToString(

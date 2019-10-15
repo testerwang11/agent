@@ -122,7 +122,7 @@ VALUES
   '$.click',
   1,
   'WebElement',
-  '[{"name":"findBy","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"}]},{"name":"value","description":"查找值"}]'
+  '[{"name":"findBy","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"text","description":"MobileBy.text"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"}]},{"name":"value","description":"查找值"}]'
 );
 
 -- 8.findElement
@@ -322,4 +322,99 @@ VALUES
   1,
   'WebElement',
   '[{"name":"containerElement","description":"容器元素"},{"name":"findBy","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"}]},{"name":"value","description":"查找值"},{"name":"startPoint","description":"起点，如: {x:0.5,y:0.5} => 容器中心点"},{"name":"endPoint","description":"终点，如: {x:0.5,y:0.5} => 容器中心点"},{"name":"maxSwipeCount","description":"最大滑动次数"}]'
+);
+
+-- 19.findElements
+INSERT INTO `action` (
+  `id`,
+  `name`,
+  `invoke`,
+  `has_return_value`,
+  `return_value_desc`,
+  `params`
+)
+VALUES
+(
+  19,
+  '查找短信验证码',
+  '$.queryMsgCode',
+  1,
+  '短信验证码',
+  '[{"name": "phone", "description":"接收验证码手机号"}]'
+  );
+
+-- 20.findElements
+INSERT INTO `action` (
+  `id`,
+  `name`,
+  `invoke`,
+  `has_return_value`,
+  `return_value_desc`,
+  `params`
+)
+VALUES
+(
+  20,
+  '手机号添加黑名单',
+  '$.addPhone2Black',
+  1,
+  '短信验证码',
+  '[{"name": "phone", "description":"手机号"}]'
+  );
+
+-- 21.ElementIsExist
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`invoke`,
+	`has_return_value`,
+	`return_value_desc`,
+	`params`
+)
+VALUES
+(
+	21,
+	'判断元素是否存在',
+	'$.elementIsExist',
+	1,
+	'WebElement',
+	'[{"name":"findBy","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"}]},{"name":"value","description":"查找值"}]'
+);
+
+-- 22.ToastIsExist
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`invoke`,
+	`has_return_value`,
+	`return_value_desc`,
+	`params`
+)
+VALUES
+(
+	22,
+	'判断toast是否存在',
+	'$.toastIsExist',
+	1,
+	'WebElement',
+	'[{"name":"value","description":"查找文本值"}]'
+);
+
+-- 23.SendKeyCode2Phone
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`invoke`,
+	`has_return_value`,
+	`return_value_desc`,
+	`params`
+)
+VALUES
+(
+	23,
+	'发送keycode到android手机执行',
+	'$.pressKeyCode',
+	0,
+	'WebElement',
+	'[{"name": "androidKeyCode", "description": "AndroidKeyCode https://www.jianshu.com/p/f7ec856ff56f"}]'
 );

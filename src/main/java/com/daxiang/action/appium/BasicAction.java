@@ -6,6 +6,8 @@ import com.daxiang.core.MobileDevice;
 import com.daxiang.core.MobileDeviceHolder;
 import com.daxiang.core.android.AndroidUtil;
 import com.daxiang.core.ios.IosUtil;
+import com.daxiang.utils.BamsUtil;
+import com.daxiang.utils.function.RandomPhoneFunction;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.TouchAction;
@@ -13,11 +15,15 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
@@ -292,7 +298,7 @@ public class BasicAction {
 
         log.info("滑动屏幕: ({},{}) -> ({},{})", startX, startY, endX, endY);
         new TouchAction(driver)
-                .press(PointOption.point(startX, startY))
+                .longPress(PointOption.point(startX, startY))
                 .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                 .moveTo(PointOption.point(endX, endY))
                 .release()
@@ -375,7 +381,7 @@ public class BasicAction {
 
         log.info("在containerElement内滑动: ({},{}) -> ({},{})", startX, startY, endX, endY);
         new TouchAction(driver)
-                .press(PointOption.point(startX, startY))
+                .longPress(PointOption.point(startX, startY))
                 .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                 .moveTo(PointOption.point(endX, endY))
                 .release()
@@ -437,7 +443,7 @@ public class BasicAction {
         for (int i = 0; i < _maxSwipeCount; i++) {
             log.info("在containerElement内滑动第{}次: ({},{}) -> ({},{})", i + 1, startX, startY, endX, endY);
             new TouchAction(driver)
-                    .press(PointOption.point(startX, startY))
+                    .longPress(PointOption.point(startX, startY))
                     .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                     .moveTo(PointOption.point(endX, endY))
                     .release()
@@ -464,6 +470,10 @@ public class BasicAction {
             case "xpath":
                 by = MobileBy.xpath(value);
                 break;
+            case "text":
+                value = "new UiSelector().text(\"" + value + "\")";
+                by = MobileBy.AndroidUIAutomator(value);
+                break;
             case "AndroidUIAutomator":
                 // http://appium.io/docs/en/writing-running-appium/android/uiautomator-uiselector/
                 value = value.replaceAll("'", "\"");
@@ -485,4 +495,69 @@ public class BasicAction {
         return by;
     }
 
+    /**
+     * 查询短信验证码
+     *
+     * @param phone
+     * @return
+     */
+    public String queryMsgCode(Object phone) {
+        return BamsUtil.queryMsgCode((String) phone);
+    }
+
+    /**
+     * 手机号添加至黑名单
+     *
+     * @param phone
+     * @return
+     * @throws IOException
+     */
+    public String addPhone2Black(Object phone) throws IOException {
+        return BamsUtil.addPhone2BlackList((String) phone);
+    }
+
+    public Object randomPhone() {
+        return RandomPhoneFunction.randomPhone();
+    }
+
+
+    /**
+     * 发送keycode到android手机执行
+     *
+     * @param androidKeyCode
+     */
+    public void pressKeyCode(Object androidKeyCode) {
+        Assert.notNull(androidKeyCode, "androidKeyCode不能为空");
+        int _androidKeyCode = Integer.parseInt((String) androidKeyCode);
+
+        if (!(driver instanceof AndroidDriver)) {
+            throw new RuntimeException("AppiumDriver不是AndroidDriver");
+        }
+
+        AndroidDriver androidDriver = (AndroidDriver) driver;
+        androidDriver.pressKeyCode(_androidKeyCode);
+    }
+
+    /**
+     * 判断元素是否存在
+     *
+     * @param findBy
+     * @param value
+     * @return
+     */
+    public WebElement elementIsExist(Object findBy, Object value) {
+        WebElement element = driver.findElement(getBy((String) findBy, (String) value));
+        return element;
+    }
+
+    /**
+     * 判断toast是否出现
+     *
+     * @param value
+     * @return
+     */
+    public WebElement toastIsExist(Object value) {
+        String temp_value = String.format("//*[contains(@text, '%s')]", value);
+        return new WebDriverWait(driver,5).until(ExpectedConditions.presenceOfElementLocated(getBy("xpath", temp_value)));
+    }
 }
