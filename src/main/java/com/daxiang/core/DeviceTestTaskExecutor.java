@@ -54,6 +54,10 @@ public class DeviceTestTaskExecutor {
         executeTestTaskThread.start();
     }
 
+    public void checkTaskIsJob(DeviceTestTask deviceTestTask) {
+
+    }
+
     /**
      * 提交测试任务
      *

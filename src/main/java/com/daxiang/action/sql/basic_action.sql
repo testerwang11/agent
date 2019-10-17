@@ -316,7 +316,7 @@ INSERT INTO `action` (
   `name`,
   `invoke`,
   `has_return_value`,
-  `return_value_desc`,
+  `return_value`,
   `params`
 )
 VALUES
@@ -335,7 +335,7 @@ INSERT INTO `action` (
   `name`,
   `invoke`,
   `has_return_value`,
-  `return_value_desc`,
+  `return_value`,
   `params`
 )
 VALUES
@@ -353,7 +353,7 @@ INSERT INTO `action` (
 	`id`,
 	`name`,
 	`invoke`,
-	`has_return_value`,
+	`return_value`,
 	`return_value_desc`,
 	`params`
 )
@@ -372,7 +372,7 @@ INSERT INTO `action` (
 	`id`,
 	`name`,
 	`invoke`,
-	`has_return_value`,
+	`return_value`,
 	`return_value_desc`,
 	`params`
 )
@@ -391,7 +391,7 @@ INSERT INTO `action` (
 	`id`,
 	`name`,
 	`invoke`,
-	`has_return_value`,
+	`return_value`,
 	`return_value_desc`,
 	`params`
 )

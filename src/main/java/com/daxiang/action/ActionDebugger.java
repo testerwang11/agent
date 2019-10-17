@@ -3,7 +3,9 @@ package com.daxiang.action;
 import com.daxiang.core.MobileDeviceHolder;
 import com.daxiang.utils.UUIDUtil;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileBy;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -29,6 +31,13 @@ public class ActionDebugger {
         // 以下为要测试的代码
         String context = appiumDriver.getContext();
         System.out.println(context);
+        appiumDriver.findElement(By.id("com.yicai.sijibao.dd1:id/close_stock_tv")).click();
+        System.out.println("===============================");
+        System.out.println(appiumDriver.getPageSource());
+
+        /*String str = "武汉市";
+        String path = "new UiScrollable(new UiSelector().scrollable(true)).getChildByDescription(new UiSelector().className(\"android.widget.TextView\"), \"上海\", false)"; //获取滚动元素对象
+        appiumDriver.findElement(MobileBy.AndroidUIAutomator(path)).click();*/
     }
 
     /**
@@ -43,9 +52,9 @@ public class ActionDebugger {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        final String deviceId = "2dd931856e821196dc2a7e5358519d539c952e29";
-        final String filePath = "/Users/jiangyitao/workspace/IdeaProjects/src/main/java/com/daxiang/action/ActionDebugger.java";
-        final String url = "http://192.168.1.8:10004/action/developer/debug";
+        final String deviceId = "CUTOWSGM99999999";
+        final String filePath = "D:/work/workspace2/agent2/src/main/java/com/daxiang/action/ActionDebugger.java";
+        final String url = "http://192.168.12.122:10004/action/developer/debug";
 
         // 1. 读取ActionDebugger.java
         String code = FileUtils.readFileToString(
