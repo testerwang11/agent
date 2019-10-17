@@ -17,8 +17,10 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -224,31 +226,10 @@ public class BasicAction {
      * 13.切换context
      *
      * @param context
-     * @return 切换后的context
      */
-    public String switchContext(String context) {
+    public void switchContext(String context) {
         Assert.hasText(context, "context不能为空");
-
-        if (MobileDevice.NATIVE_CONTEXT.equals(context)) {
-            // 切换到原生
-            driver.context(context);
-        } else {
-            Set<String> contexts = driver.getContextHandles();
-            log.info("contexts: {}", contexts);
-            for (String ctx : contexts) {
-                // webview 目前先这样处理，如果有多个webview可能会切换错
-                if (!MobileDevice.NATIVE_CONTEXT.equals(ctx)) {
-                    driver.context(ctx);
-                    break;
-                }
-            }
-            context = driver.getContext();
-            if (MobileDevice.NATIVE_CONTEXT.equals(context)) {
-                throw new RuntimeException("未检测到webview，无法切换。当前contexts: " + contexts.toString());
-            }
-        }
-
-        return context;
+        driver.context(context);
     }
 
     /**
@@ -443,6 +424,14 @@ public class BasicAction {
         return driver.findElement(by);
     }
 
+    /**
+     * platform: Android / iOS
+     * 19.切换窗口
+     */
+    public void switchWindow(String window) {
+        Assert.hasText(window, "window不能为空");
+        driver.switchTo().window(window);
+    }
 
     private By getBy(String findBy, String value) {
         By by;
@@ -470,6 +459,24 @@ public class BasicAction {
                 break;
             case "image":
                 by = MobileBy.image(value);
+                break;
+            case "className":
+                by = MobileBy.className(value);
+                break;
+            case "name":
+                by = MobileBy.name(value);
+                break;
+            case "cssSelector":
+                by = MobileBy.cssSelector(value);
+                break;
+            case "linkText":
+                by = MobileBy.linkText(value);
+                break;
+            case "partialLinkText":
+                by = MobileBy.partialLinkText(value);
+                break;
+            case "tagName":
+                by = MobileBy.tagName(value);
                 break;
             default:
                 throw new RuntimeException("暂不支持: " + findBy);
