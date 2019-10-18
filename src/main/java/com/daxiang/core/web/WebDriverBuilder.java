@@ -24,13 +24,10 @@ import java.net.URL;
 import java.util.Date;
 
 @Slf4j
-@Component
-//@Order(value = 10)
-public class WebDriverBuilder implements ApplicationRunner {
+public class WebDriverBuilder {
 
-    private String basedir = System.getProperty("user.dir") + "/vendor/driver/";
+    private String basedir = System.getProperty("user.dir") + "/vendor/driver/win/";
     private String chromeDriver = basedir + "chromedriver.exe";
-    private ChromeDriverService service;
 
     public void init() throws IOException {
 
@@ -43,10 +40,12 @@ public class WebDriverBuilder implements ApplicationRunner {
                 .build();
         service.start();
 
-        RemoteWebDriver driver = new RemoteWebDriver(service.getUrl(),
-                DesiredCapabilities.chrome());
-        HttpCommandExecutor executor = (HttpCommandExecutor) driver.getCommandExecutor();
-        URL url = executor.getAddressOfRemoteServer();
+        RemoteWebDriver driver = new RemoteWebDriver(service.getUrl(), DesiredCapabilities.chrome());
+
+        driver.manage().window().maximize();
+
+        //HttpCommandExecutor executor = (HttpCommandExecutor) driver.getCommandExecutor();
+        //URL url = executor.getAddressOfRemoteServer();
         SessionId session_id = driver.getSessionId();
         driver.get("http://www.sijibao.com");
         Device device = new Device();
@@ -65,12 +64,6 @@ public class WebDriverBuilder implements ApplicationRunner {
         String imgUrl= MasterApi.getInstance().uploadFile(driver.getScreenshotAs(OutputType.FILE));
         device.setImgUrl(imgUrl);
         MasterApi.getInstance().saveDevice(device);
-    }
-
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        init();
     }
 
     public static void snapshot(TakesScreenshot drivername, String filename) {

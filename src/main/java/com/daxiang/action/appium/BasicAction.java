@@ -22,9 +22,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -231,11 +233,9 @@ public class BasicAction {
      * 13.切换context
      *
      * @param context
-     * @return 切换后的context
      */
     public String switchContext(String context) {
         Assert.hasText(context, "context不能为空");
-
         if (MobileDevice.NATIVE_CONTEXT.equals(context)) {
             // 切换到原生
             driver.context(context);
@@ -254,7 +254,6 @@ public class BasicAction {
                 throw new RuntimeException("未检测到webview，无法切换。当前contexts: " + contexts.toString());
             }
         }
-
         return context;
     }
 
@@ -450,6 +449,14 @@ public class BasicAction {
         return driver.findElement(by);
     }
 
+    /**
+     * platform: Android / iOS
+     * 19.切换窗口
+     */
+    public void switchWindow(String window) {
+        Assert.hasText(window, "window不能为空");
+        driver.switchTo().window(window);
+    }
 
     private By getBy(String findBy, String value) {
         By by;
@@ -481,6 +488,24 @@ public class BasicAction {
                 break;
             case "image":
                 by = MobileBy.image(value);
+                break;
+            case "className":
+                by = MobileBy.className(value);
+                break;
+            case "name":
+                by = MobileBy.name(value);
+                break;
+            case "cssSelector":
+                by = MobileBy.cssSelector(value);
+                break;
+            case "linkText":
+                by = MobileBy.linkText(value);
+                break;
+            case "partialLinkText":
+                by = MobileBy.partialLinkText(value);
+                break;
+            case "tagName":
+                by = MobileBy.tagName(value);
                 break;
             default:
                 throw new RuntimeException("暂不支持: " + findBy);
@@ -554,8 +579,18 @@ public class BasicAction {
         return new WebDriverWait(driver, 5).until(ExpectedConditions.presenceOfElementLocated(getBy("xpath", temp_value)));
     }
 
-    public WebElement hd(String str) {
-        driver.findElement(MobileBy.AndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""+ str + "\").instance(0))"));
-        return null;
+    /**
+     * platform: Android / iOS
+     * 切换到最新窗口
+     */
+    public void switchToLastWindow() {
+        Set<String> windowHandles = driver.getWindowHandles();
+        log.info("windowHandles: {}", windowHandles);
+        if (CollectionUtils.isEmpty(windowHandles)) {
+            throw new RuntimeException("当前无窗口句柄");
+        }
+
+        List<String> windows = new ArrayList(windowHandles);
+        driver.switchTo().window(windows.get(windows.size() - 1));
     }
 }

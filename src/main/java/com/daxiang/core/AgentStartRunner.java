@@ -7,6 +7,7 @@ import com.daxiang.core.android.AndroidDeviceChangeListener;
 import com.daxiang.core.appium.AppiumServer;
 import com.daxiang.core.ios.IosDeviceChangeListener;
 import com.daxiang.core.ios.IosDeviceMonitor;
+import com.daxiang.core.web.WebDriverBuilder;
 import com.daxiang.utils.Terminal;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -53,6 +54,9 @@ public class AgentStartRunner implements ApplicationRunner {
     private boolean needAndroid;
     @Value("${ios}")
     private boolean needIos;
+    @Value("${web}")
+    private boolean needWeb;
+
 
     @Override
     public void run(ApplicationArguments args) throws IOException, InterruptedException {
@@ -72,6 +76,13 @@ public class AgentStartRunner implements ApplicationRunner {
             log.info("[ios]开始监听设备连接/断开");
         } else {
             log.info("[ios]未开启ios功能");
+        }
+
+        if (needWeb){
+            log.info("[web]开启web功能");
+            new WebDriverBuilder().init();
+        }else {
+            log.info("[web]未开启web功能");
         }
 
         File deviceChromeDriverJsonFile = new File(DEVICE_CHROMEDRIVER_JSON_FILE);
