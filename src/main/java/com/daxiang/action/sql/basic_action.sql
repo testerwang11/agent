@@ -1,4 +1,4 @@
-set @findbyAndValue = '{"name":"findBy","type":"String","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"},{"value":"className","description":"MobileBy.className"},{"value":"name","description":"MobileBy.name"},{"value":"cssSelector","description":"MobileBy.cssSelector"},{"value":"linkText","description":"MobileBy.linkText"},{"value":"partialLinkText","description":"MobileBy.partialLinkText"},{"value":"tagName","description":"MobileBy.tagName"}]},{"name":"value","type":"String","description":"查找值"}';
+set @findbyAndValue = '{"name":"findBy","type":"String","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"text","description":"MobileBy.text"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"},{"value":"className","description":"MobileBy.className"},{"value":"name","description":"MobileBy.name"},{"value":"cssSelector","description":"MobileBy.cssSelector"},{"value":"linkText","description":"MobileBy.linkText"},{"value":"partialLinkText","description":"MobileBy.partialLinkText"},{"value":"tagName","description":"MobileBy.tagName"}]},{"name":"value","type":"String","description":"查找值"}';
 -- 1.executeJavaCode
 INSERT INTO `action` (
   `id`,
@@ -223,7 +223,7 @@ VALUES
   '切换context[switchContext]',
   '$.switchContext',
   'void',
-  '[{"name":"context","type":"String","description":"context","possibleValues":[{"value":"NATIVE_APP","description":"原生"}]}]'
+  '[{"name":"context","type":"String","description":"context","possibleValues":[{"value":"NATIVE_APP","description":"原生"}, {"value":"WEB_VIEW","description":"原生"}]}]'
 );
 
 -- 14.sleep
@@ -326,4 +326,91 @@ VALUES
   '$.switchWindow',
   'void',
   '[{"name":"window","type":"String","description":"窗口"}]'
+);
+
+-- 100.查找短信验证码
+INSERT INTO `action` (
+  `id`,
+  `name`,
+  `invoke`,
+  `return_value`,
+  `params`
+)
+VALUES
+(
+  100,
+  '查找短信验证码',
+  '$.queryMsgCode',
+  'String',
+  '[{"name": "phone", "type":"String","description":"接收验证码手机号"}]'
+  );
+
+-- 101.手机号添加黑名单
+INSERT INTO `action` (
+  `id`,
+  `name`,
+  `invoke`,
+  `return_value`,
+  `params`
+)
+VALUES
+(
+  101,
+  '手机号添加黑名单',
+  '$.addPhone2Black',
+  'void',
+  '[{"name": "phone", "type":"String", "description":"手机号"}]'
+  );
+
+-- 102.ElementIsExist
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`invoke`,
+	`return_value`,
+	`params`
+)
+VALUES
+(
+	102,
+	'判断元素是否存在',
+	'$.elementIsExist',
+	'WebElement',
+  REPLACE('[#,{"name":"findBy","type":"WebElement","description":"查找方式"}]','#',@findbyAndValue)
+);
+
+-- 103.ToastIsExist
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`invoke`,
+	`return_value`,
+	`params`
+)
+VALUES
+(
+	103,
+	'判断toast是否存在',
+	'$.toastIsExist',
+	'WebElement',
+	'[{"name":"value","type":"String","description":"查找文本值"}]'
+);
+
+-- 104.SendKeyCode2Phone
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`invoke`,
+  `platform`,
+	`return_value`,
+	`params`
+)
+VALUES
+(
+	104,
+	'发送keycode到android手机执行',
+	'$.pressKeyCode',
+  1,
+	'void',
+	'[{"name": "androidKeyCode", "description": "AndroidKeyCode https://www.jianshu.com/p/f7ec856ff56f"}]'
 );
