@@ -1,5 +1,7 @@
 package com.daxiang.api;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.daxiang.App;
 import com.daxiang.model.Device;
 import com.daxiang.model.Response;
@@ -40,15 +42,26 @@ public class MasterApi {
 
     @Value("${master}/device/list")
     private String deviceListApi;
+
     @Value("${master}/device/save")
     private String deviceSaveApi;
+
+    @Value("${master}/device/del")
+    private String deviceDelApi;
 
     @Value("${master}/deviceTestTask/update")
     private String updateDeviceTestTaskApi;
     @Value("${master}/deviceTestTask/firstUnStart/device/%s")
     private String findFirstUnStartDeviceTestTaskApi;
+
+    @Value("${master}/deviceTestTask/firstUnStart/device")
+    private String findFirstUnStartDeviceTestTaskApi2;
+
     @Value("${master}/deviceTestTask/%d/updateTestcase")
     private String updateTestcaseApi;
+
+    @Value("${master}/project/list")
+    private String projectListApi;
 
     public synchronized static MasterApi getInstance() {
         if (masterApi == null) {
@@ -70,7 +83,36 @@ public class MasterApi {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity(params, headers);
 
         Response<List<Device>> response = restTemplate.exchange(deviceListApi, HttpMethod.POST, requestEntity,
-                new ParameterizedTypeReference<Response<List<Device>>>() {}).getBody();
+                new ParameterizedTypeReference<Response<List<Device>>>() {
+                }).getBody();
+
+        if (response.isSuccess()) {
+            return response.getData().stream().findFirst().orElse(null);
+        } else {
+            throw new RuntimeException(response.getMsg());
+        }
+    }
+
+    /**
+     * 通过IP加端口获取 PC
+     *
+     * @param ip
+     * @param port
+     * @return
+     */
+    public Device getDeviceByIpAndPort(String ip, String port, String platform) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("agentIp", ip);
+        params.add("agentPort", port);
+        params.add("platform", platform);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity(params, headers);
+
+        Response<List<Device>> response = restTemplate.exchange(deviceListApi, HttpMethod.POST, requestEntity,
+                new ParameterizedTypeReference<Response<List<Device>>>() {
+                }).getBody();
 
         if (response.isSuccess()) {
             return response.getData().stream().findFirst().orElse(null);
@@ -92,6 +134,20 @@ public class MasterApi {
     }
 
     /**
+     * 删除设备
+     *
+     * @param data
+     */
+    public void delDevice(JSONObject data) {
+        log.info("请求参数是这个:" + data);
+        Response response = restTemplate.postForObject(deviceDelApi, data, Response.class);
+        if (!response.isSuccess()) {
+            throw new RuntimeException(response.getMsg());
+        }
+    }
+
+
+    /**
      * 上传文件
      *
      * @return 下载地址
@@ -103,7 +159,8 @@ public class MasterApi {
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(multiValueMap);
 
         Response<Map<String, String>> response = restTemplate.exchange(uploadFileApi, HttpMethod.POST, httpEntity,
-                new ParameterizedTypeReference<Response<Map<String, String>>>() {}).getBody();
+                new ParameterizedTypeReference<Response<Map<String, String>>>() {
+                }).getBody();
 
         if (response.isSuccess()) {
             return response.getData().get("downloadURL");
@@ -128,7 +185,23 @@ public class MasterApi {
     public DeviceTestTask getFirstUnStartDeviceTestTask(String deviceId) {
         String url = String.format(findFirstUnStartDeviceTestTaskApi, deviceId);
         Response<DeviceTestTask> response = restTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<Response<DeviceTestTask>>() {}).getBody();
+                new ParameterizedTypeReference<Response<DeviceTestTask>>() {
+                }).getBody();
+
+        if (response.isSuccess()) {
+            return response.getData();
+        } else {
+            throw new RuntimeException(response.getMsg());
+        }
+    }
+
+    /**
+     * 获取最早的未开始的测试任务
+     */
+    public DeviceTestTask getFirstUnStartDeviceTestTask() {
+        Response<DeviceTestTask> response = restTemplate.exchange(findFirstUnStartDeviceTestTaskApi2, HttpMethod.GET, null,
+                new ParameterizedTypeReference<Response<DeviceTestTask>>() {
+                }).getBody();
 
         if (response.isSuccess()) {
             return response.getData();

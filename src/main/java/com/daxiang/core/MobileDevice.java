@@ -11,9 +11,9 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.dom4j.DocumentException;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -37,6 +37,8 @@ public abstract class MobileDevice {
 
     private AppiumServer appiumServer;
     private AppiumDriver appiumDriver;
+
+    private RemoteWebDriver webDriver;
 
     public MobileDevice(Device device, AppiumServer appiumServer) {
         this.device = device;

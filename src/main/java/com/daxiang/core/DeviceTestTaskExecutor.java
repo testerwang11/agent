@@ -3,15 +3,12 @@ package com.daxiang.core;
 import com.daxiang.core.javacompile.JavaCompiler;
 import com.daxiang.core.testng.TestNGCodeConverter;
 import com.daxiang.core.testng.TestNGRunner;
-import com.daxiang.model.action.Action;
 import com.daxiang.model.devicetesttask.DeviceTestTask;
 import com.daxiang.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -80,7 +77,7 @@ public class DeviceTestTaskExecutor {
         mobileDevice.saveUsingDeviceToMaster(deviceTestTask.getTestTaskName());
 
         try {
-            String className = "Test_" + UUIDUtil.getUUID();
+            String className = "MobileTest_" + UUIDUtil.getUUID();
             String code = new TestNGCodeConverter()
                     .setDeviceTestTaskId(deviceTestTask.getId())
                     .setGlobalVars(deviceTestTask.getGlobalVars())
