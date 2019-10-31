@@ -96,6 +96,7 @@ public class TestNGCodeConverter {
     }
 
     private void handleJavaImports() {
+        javaImports.add("import com.daxiang.core.BaseUITest;");
         javaImports.add("import com.daxiang.core.MobileDeviceHolder;");
         javaImports.add("import io.appium.java_client.AppiumDriver;");
         javaImports.add("import org.testng.annotations.*;");
@@ -103,9 +104,13 @@ public class TestNGCodeConverter {
         javaImports.add("import com.daxiang.core.testng.listener.TestCaseTestListener;");
         javaImports.add("import com.daxiang.core.testng.listener.DebugActionTestListener;");
         javaImports.add("import com.daxiang.action.appium.BasicAction;");
+        javaImports.add("import com.daxiang.action.appium.WebBasicAction;");
         javaImports.add("import org.openqa.selenium.*;");
         javaImports.add("import java.util.*;");
         javaImports.add("import static org.assertj.core.api.Assertions.*;");
+        javaImports.add("import com.daxiang.core.web.WebDevice;");
+        javaImports.add("import org.openqa.selenium.remote.RemoteWebDriver;");
+        javaImports.add("import com.daxiang.core.web.WebDriverService;");
 
         cachedActions.values().forEach(action -> {
             List<String> javaImports = action.getJavaImports();

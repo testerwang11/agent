@@ -30,6 +30,7 @@ public class DeviceTestTask {
 
     private Integer id;
     private Integer testTaskId;
+    private Integer projectId;
     private String testTaskName;
     private String deviceId;
     private Integer status;

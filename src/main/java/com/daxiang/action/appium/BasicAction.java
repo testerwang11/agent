@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by jiangyitao.
  */
@@ -244,7 +246,8 @@ public class BasicAction {
             log.info("contexts: {}", contexts);
             for (String ctx : contexts) {
                 // webview 目前先这样处理，如果有多个webview可能会切换错
-                if (!MobileDevice.NATIVE_CONTEXT.equals(ctx)) {
+                if (context.equals(ctx)) {
+                    log.info("切换contexts: {}", ctx);
                     driver.context(ctx);
                     break;
                 }
@@ -294,7 +297,7 @@ public class BasicAction {
 
         log.info("滑动屏幕: ({},{}) -> ({},{})", startX, startY, endX, endY);
         new TouchAction(driver)
-                .longPress(PointOption.point(startX, startY))
+                .press(PointOption.point(startX, startY))
                 .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                 .moveTo(PointOption.point(endX, endY))
                 .release()
@@ -334,7 +337,6 @@ public class BasicAction {
             } catch (Exception e) {
             }
         }
-
         return driver.findElement(by);
     }
 
@@ -458,6 +460,25 @@ public class BasicAction {
         driver.switchTo().window(window);
     }
 
+    /**
+     * platform: Android / iOS
+     * 20.等待元素在DOM里出现，不一定可见
+     * 可用于检查toast是否显示
+     *
+     * @param findBy
+     * @param value
+     * @param maxWaitTimeInSeconds
+     * @return
+     */
+    public WebElement waitForElementPresence(String findBy, String value, String maxWaitTimeInSeconds) {
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
+        Assert.hasText(maxWaitTimeInSeconds, "最大等待时间不能为空");
+
+        return new WebDriverWait(driver, Long.parseLong(maxWaitTimeInSeconds))
+                .until(ExpectedConditions.presenceOfElementLocated(getBy(findBy, value)));
+    }
+
     private By getBy(String findBy, String value) {
         By by;
         switch (findBy) {
@@ -553,7 +574,11 @@ public class BasicAction {
         }
 
         AndroidDriver androidDriver = (AndroidDriver) driver;
+        //androidDriver.pressKey(KeyEvent);
         androidDriver.pressKeyCode(_androidKeyCode);
+        //androidDriver.pressKey(new KeyEvent(AndroidKey.BOOKMARK));
+
+
     }
 
     /**
@@ -593,4 +618,66 @@ public class BasicAction {
         List<String> windows = new ArrayList(windowHandles);
         driver.switchTo().window(windows.get(windows.size() - 1));
     }
+
+    /**
+     * platform: Android / iOS
+     * 长按
+     *
+     * @param findBy
+     * @param value
+     */
+    public void longClick(Object findBy, Object value) {
+        WebElement element = driver.findElement(getBy((String) findBy, (String) value));
+        Point p = element.getLocation();
+
+        WaitOptions waitOption = WaitOptions.waitOptions(Duration.ofSeconds(2));
+
+        new TouchAction(driver)
+                .longPress(PointOption.point(p.getX(), p.getY())).waitAction(waitOption).perform().release();
+    }
+
+    /**
+     * 通过坐标点击
+     *
+     * @param clickPonit {"x": 0.5, "y": 0.5}
+     */
+    public void clickByCoordinate(String clickPonit) {
+        //new TouchAction(driver).press(PointOption.point(Integer.parseInt(x), Integer.parseInt(y))).release().perform();
+        JSONObject point = JSONObject.parseObject(clickPonit);
+        int startX = (int) (point.getFloat("x") * screenWidth);
+        int startY = (int) (point.getFloat("y") * screenHeight);
+        new TouchAction(driver).tap(PointOption.point(startX, startY)).perform().release();
+    }
+
+    /**
+     * 断言
+     *
+     * @param expect
+     * @param acture
+     */
+    public String equals(Object expect, Object acture) {
+        try {
+            assertEquals(expect, acture);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return "断言成功";
+    }
+
+    /**
+     * 获取指定元素的属性值
+     *
+     * @param findBy
+     * @param value
+     * @param attribute
+     * @return
+     */
+    public String getElementAttribute(String findBy, String value, String attribute) {
+        Assert.hasText(findBy, "findBy不能为空");
+        Assert.hasText(value, "value不能为空");
+        WebElement element = driver.findElement(getBy(findBy, value));
+        String result = element.getAttribute(attribute);
+        return result;
+    }
+
 }

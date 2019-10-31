@@ -19,6 +19,8 @@ public class TestSuiteRunnable implements Runnable{
     @Autowired
     private MasterApi masterApi;
 
+
+
     @Override
     public void run() {
         // 在线闲置的设备

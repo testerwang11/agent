@@ -2,23 +2,44 @@ package com.daxiang.core.testng;
 
 import com.daxiang.core.testng.listener.DebugActionTestListener;
 import com.daxiang.core.testng.listener.TestCaseTestListener;
+import com.daxiang.core.testng.listener.TestCaseTestListenerWeb;
 import com.daxiang.model.Response;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.testng.TestNG;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by jiangyitao.
  */
+@Component
 public class TestNGRunner {
+
+    public static String getConfig(String key) {
+        Properties properties = new Properties();
+        InputStream in = TestNGRunner.class.getClassLoader().getResourceAsStream("application-dev.properties");
+        try {
+            properties.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return properties.getProperty(key);
+    }
 
     /**
      * 运行测试用例
      */
     public static void runTestCases(Class[] classes) {
-        run(classes, Arrays.asList(TestCaseTestListener.class));
+        if(Boolean.parseBoolean(getConfig("web"))){
+            run(classes, Arrays.asList(TestCaseTestListenerWeb.class));
+        }else {
+            run(classes, Arrays.asList(TestCaseTestListener.class));
+        }
     }
 
     /**
@@ -47,6 +68,7 @@ public class TestNGRunner {
         testNG.setTestClasses(testClasses);
         testNG.setListenerClasses(listenerClasses);
         testNG.setUseDefaultListeners(false); // 不用默认监听器,不会自动生成testng的默认报告
+        //testNG.setOutputDirectory("D:\\test");//设置输出目录
         testNG.run();
         return testNG;
     }

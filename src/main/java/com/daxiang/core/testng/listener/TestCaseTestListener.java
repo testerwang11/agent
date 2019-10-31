@@ -39,7 +39,7 @@ public class TestCaseTestListener extends TestListenerAdapter {
         Boolean needRecordVideo = true; // 这个版本先设置为需要录制视频，以后可能改成从前端传过来
 
         MobileDevice mobileDevice = MobileDeviceHolder.get(deviceId);
-        log.info("[自动化测试][{}]onStart, deviceTestTaskId：{}", deviceId, deviceTestTaskId);
+        log.info("[移动端自动化测试][{}]onStart, deviceTestTaskId：{}", deviceId, deviceTestTaskId);
 
         TL_MOBILE_DEVICE.set(mobileDevice);
         TL_DEVICE_TEST_TASK_ID.set(deviceTestTaskId);
@@ -63,7 +63,7 @@ public class TestCaseTestListener extends TestListenerAdapter {
         String deviceId = mobileDevice.getId();
         Integer deviceTestTaskId = TL_DEVICE_TEST_TASK_ID.get();
 
-        log.info("[自动化测试][{}]onFinish, deviceTestTaskId: {}", deviceId, deviceTestTaskId);
+        log.info("[移动端自动化测试][{}]onFinish, deviceTestTaskId: {}", deviceId, deviceTestTaskId);
         DeviceTestTask deviceTestTask = new DeviceTestTask();
         deviceTestTask.setId(deviceTestTaskId);
         deviceTestTask.setEndTime(new Date());
@@ -87,7 +87,7 @@ public class TestCaseTestListener extends TestListenerAdapter {
         Integer testcaseId = Integer.parseInt(tr.getMethod().getDescription().split("_")[2]);
         TL_TEST_CASE_ID.set(testcaseId);
 
-        log.info("[自动化测试][{}]onTestStart, testcaseId: {}", deviceId, testcaseId);
+        log.info("[移动端自动化测试][{}]onTestStart, testcaseId: {}", deviceId, testcaseId);
 
         Testcase testcase = new Testcase();
         testcase.setId(testcaseId);
@@ -96,10 +96,10 @@ public class TestCaseTestListener extends TestListenerAdapter {
 
         if (needRecordVideo) {
             try {
-                log.info("[自动化测试][{}]testcaseId: {}, 开始录制视频...", deviceId, testcaseId);
+                log.info("[移动端自动化测试][{}]testcaseId: {}, 开始录制视频...", deviceId, testcaseId);
                 mobileDevice.startRecordingScreen();
             } catch (Exception e) {
-                log.error("[自动化测试][{}]testcaseId: {}, 启动录制视频失败", deviceId, testcaseId, e);
+                log.error("[移动端自动化测试][{}]testcaseId: {}, 启动录制视频失败", deviceId, testcaseId, e);
                 TL_NEED_RECORD_VIDEO.set(false);
             }
         }
@@ -109,7 +109,7 @@ public class TestCaseTestListener extends TestListenerAdapter {
     public void onTestSuccess(ITestResult tr) {
         MobileDevice mobileDevice = TL_MOBILE_DEVICE.get();
         Integer testcaseId = TL_TEST_CASE_ID.get();
-        log.info("[自动化测试][{}]onTestSuccess, testcaseId: {}", mobileDevice.getId(), testcaseId);
+        log.info("[移动端自动化测试][{}]onTestSuccess, testcaseId: {}", mobileDevice.getId(), testcaseId);
 
         Testcase testcase = new Testcase();
         testcase.setId(testcaseId);
@@ -123,7 +123,7 @@ public class TestCaseTestListener extends TestListenerAdapter {
     public void onTestFailure(ITestResult tr) {
         MobileDevice mobileDevice = TL_MOBILE_DEVICE.get();
         Integer testcaseId = TL_TEST_CASE_ID.get();
-        log.error("[自动化测试][{}]onTestFailure, testcaseId: {}", mobileDevice.getId(), testcaseId, tr.getThrowable());
+        log.error("[移动端自动化测试][{}]onTestFailure, testcaseId: {}", mobileDevice.getId(), testcaseId, tr.getThrowable());
 
         Testcase testcase = new Testcase();
         testcase.setId(testcaseId);
@@ -145,7 +145,7 @@ public class TestCaseTestListener extends TestListenerAdapter {
     public void onTestSkipped(ITestResult tr) {
         MobileDevice mobileDevice = TL_MOBILE_DEVICE.get();
         Integer testcaseId = TL_TEST_CASE_ID.get();
-        log.warn("[自动化测试][{}]onTestSkipped, testcaseId: {}", mobileDevice.getId(), testcaseId, tr.getThrowable());
+        log.warn("[移动端自动化测试][{}]onTestSkipped, testcaseId: {}", mobileDevice.getId(), testcaseId, tr.getThrowable());
 
         Testcase testcase = new Testcase();
         testcase.setId(testcaseId);
@@ -166,7 +166,7 @@ public class TestCaseTestListener extends TestListenerAdapter {
         try {
             return mobileDevice.screenshotAndUploadToMaster();
         } catch (Exception e) {
-            log.error("[自动化测试][{}]testcaseId: {}，截图并上传到master失败", mobileDevice.getId(), TL_TEST_CASE_ID.get(), e);
+            log.error("[移动端自动化测试][{}]testcaseId: {}，截图并上传到master失败", mobileDevice.getId(), TL_TEST_CASE_ID.get(), e);
             return null;
         }
     }
@@ -181,13 +181,13 @@ public class TestCaseTestListener extends TestListenerAdapter {
         Integer testcaseId = TL_TEST_CASE_ID.get();
 
         try {
-            log.info("[自动化测试][{}]testcaseId: {}, 停止录制视频...", deviceId, testcaseId);
+            log.info("[移动端自动化测试][{}]testcaseId: {}, 停止录制视频...", deviceId, testcaseId);
             long startTime = System.currentTimeMillis();
             String downloadUrl = mobileDevice.stopRecordingScreenAndUploadToMaster();
-            log.info("[自动化测试][{}]testcaseId: {}, 停止录制视频并上传到master完成，耗时: {} ms", deviceId, testcaseId, System.currentTimeMillis() - startTime);
+            log.info("[移动端自动化测试][{}]testcaseId: {}, 停止录制视频并上传到master完成，耗时: {} ms", deviceId, testcaseId, System.currentTimeMillis() - startTime);
             return downloadUrl;
         } catch (Exception e) {
-            log.error("[自动化测试][{}]testcaseId: {}，stopRecordingScreenAndUploadToMaster err", deviceId, testcaseId, e);
+            log.error("[移动端自动化测试][{}]testcaseId: {}，stopRecordingScreenAndUploadToMaster err", deviceId, testcaseId, e);
             return null;
         }
     }

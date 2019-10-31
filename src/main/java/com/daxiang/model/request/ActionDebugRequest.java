@@ -13,9 +13,13 @@ import java.util.List;
  */
 @Data
 public class ActionDebugRequest {
+
     @NotNull(message = "action不能为空")
     private Action action;
     private List<GlobalVar> globalVars;
     @NotBlank(message = "deviceId不能为空")
     private String deviceId;
+
+    private Integer platform;
+
 }

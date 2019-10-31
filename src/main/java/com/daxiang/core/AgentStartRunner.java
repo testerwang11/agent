@@ -86,27 +86,28 @@ public class AgentStartRunner implements ApplicationRunner {
         }
 
         File deviceChromeDriverJsonFile = new File(DEVICE_CHROMEDRIVER_JSON_FILE);
+
         if (deviceChromeDriverJsonFile.exists()) {
             log.info("检测到{}", DEVICE_CHROMEDRIVER_JSON_FILE);
             String deviceChromeDriverJsonFileContent = FileUtils.readFileToString(deviceChromeDriverJsonFile, Charset.forName("UTF-8"));
             log.info("{} => {}", DEVICE_CHROMEDRIVER_JSON_FILE, deviceChromeDriverJsonFileContent);
             deviceIdChromeDriverFilePath = JSON.parseObject(deviceChromeDriverJsonFileContent);
         }
+        if(!needWeb){
+            // appium版本
+            String appiumVersion = AppiumServer.getVersion();
+            System.setProperty("appiumVersion", appiumVersion);
 
-        // appium版本
-        String appiumVersion = AppiumServer.getVersion();
-        System.setProperty("appiumVersion", appiumVersion);
-
-        // 是否配置了aapt
-        String aaptVersion = Terminal.execute("aapt v");
-        if (!StringUtils.isEmpty(aaptVersion) && aaptVersion.startsWith("Android")) {
-            System.setProperty("aapt", "true");
-        } else {
-            System.setProperty("aapt", "false");
+            // 是否配置了aapt
+            String aaptVersion = Terminal.execute("aapt v");
+            if (!StringUtils.isEmpty(aaptVersion) && aaptVersion.startsWith("Android")) {
+                System.setProperty("aapt", "true");
+            } else {
+                System.setProperty("aapt", "false");
+            }
+            // ffmpeg
+            Terminal.execute("ffmpeg -version");
         }
-
-        // ffmpeg
-        Terminal.execute("ffmpeg -version");
     }
 
     public static String getChromeDriverFilePath(String deviceId) {
