@@ -6,8 +6,6 @@ import com.daxiang.core.MobileDevice;
 import com.daxiang.core.MobileDeviceHolder;
 import com.daxiang.core.android.AndroidUtil;
 import com.daxiang.core.ios.IosUtil;
-import com.daxiang.utils.BamsUtil;
-import com.daxiang.utils.function.RandomPhoneFunction;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.TouchAction;
@@ -24,28 +22,21 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-
-/**
- * Created by jiangyitao.
- */
 @Slf4j
-public class BasicAction {
-
+public class MobileAction2 extends BasicAction2 {
     public static final int EXECUTE_JAVA_CODE_ID = 1;
 
     private AppiumDriver driver;
     private int screenHeight;
     private int screenWidth;
 
-    public BasicAction(AppiumDriver driver) {
+    public MobileAction2(AppiumDriver driver) {
         this.driver = driver;
         MobileDevice mobileDevice = MobileDeviceHolder.getMobileDeviceByAppiumDriver(driver);
         if (mobileDevice == null) {
@@ -259,18 +250,7 @@ public class BasicAction {
         return context;
     }
 
-    /**
-     * 14.休眠
-     * platform: Android / iOS
-     *
-     * @param sleepTimeInSeconds
-     * @throws InterruptedException
-     */
-    public void sleep(String sleepTimeInSeconds) throws InterruptedException {
-        Assert.hasText(sleepTimeInSeconds, "休眠时长不能为空");
-        long sleepTime = (long) (Float.parseFloat(sleepTimeInSeconds) * 1000);
-        Thread.sleep(sleepTime);
-    }
+
 
     /**
      * 15.滑动屏幕
@@ -534,31 +514,6 @@ public class BasicAction {
         return by;
     }
 
-    /**
-     * 查询短信验证码
-     *
-     * @param phone
-     * @return
-     */
-    public String queryMsgCode(Object phone) {
-        return BamsUtil.queryMsgCode((String) phone);
-    }
-
-    /**
-     * 手机号添加至黑名单
-     *
-     * @param phone
-     * @return
-     * @throws IOException
-     */
-    public String addPhone2Black(Object phone) throws IOException {
-        return BamsUtil.addPhone2BlackList((String) phone);
-    }
-
-    public Object randomPhone() {
-        return RandomPhoneFunction.randomPhone();
-    }
-
 
     /**
      * 发送keycode到android手机执行
@@ -647,21 +602,6 @@ public class BasicAction {
         int startX = (int) (point.getFloat("x") * screenWidth);
         int startY = (int) (point.getFloat("y") * screenHeight);
         new TouchAction(driver).tap(PointOption.point(startX, startY)).perform().release();
-    }
-
-    /**
-     * 断言
-     *
-     * @param expect
-     * @param acture
-     */
-    public String equals(Object expect, Object acture) {
-        try {
-            assertEquals(expect, acture);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "断言成功";
     }
 
     /**

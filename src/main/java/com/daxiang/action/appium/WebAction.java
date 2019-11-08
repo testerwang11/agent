@@ -1,5 +1,7 @@
 package com.daxiang.action.appium;
 
+import com.daxiang.App;
+import com.daxiang.utils.BamsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -9,6 +11,7 @@ import org.springframework.util.Assert;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,13 +19,12 @@ import static org.junit.Assert.assertEquals;
  * Created by jiangyitao.
  */
 @Slf4j
-public class WebBasicAction {
+public class WebBasicAction2 extends BasicAction2 {
 
-    public static final int EXECUTE_JAVA_CODE_ID = 1;
 
     private RemoteWebDriver driver;
 
-    public WebBasicAction(RemoteWebDriver driver) {
+    public WebBasicAction2(RemoteWebDriver driver) {
         this.driver = driver;
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
@@ -82,7 +84,8 @@ public class WebBasicAction {
      * @param value
      */
     public void click(Object findBy, Object value) {
-        driver.findElement(getByWeb((String) findBy, (String) value)).click();
+        new WebDriverWait(driver, Long.parseLong(App.getProperty("timeout")))
+                .until(ExpectedConditions.elementToBeClickable(getByWeb((String) findBy, (String) value))).click();
     }
 
     /**
@@ -92,6 +95,7 @@ public class WebBasicAction {
      * @param value
      */
     public WebElement sendKeys(String findBy, String value, String content) {
+        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         WebElement element = driver.findElement(getByWeb(findBy, value));
         element.clear();
         element.sendKeys(content);
@@ -105,6 +109,7 @@ public class WebBasicAction {
      * @param value
      */
     public void selectFrame(Object findBy, Object value) {
+        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         driver.switchTo().frame(driver.findElement(getByWeb((String) findBy, (String) value)));
     }
 
@@ -134,8 +139,24 @@ public class WebBasicAction {
      * @return
      */
     public String getElementValue(Object findBy, Object value, Object attribute) {
+        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         WebElement element = driver.findElement(getByWeb((String) findBy, (String) value));
+        if (((String) attribute).equalsIgnoreCase("text")) {
+            return element.getText();
+        }
         return element.getAttribute((String) attribute);
+    }
+
+    /**
+     * 获取元素数量
+     *
+     * @param findBy
+     * @param value
+     * @return
+     */
+    public Integer getElementSize(Object findBy, Object value) {
+        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
+        return driver.findElements(getByWeb((String) findBy, (String) value)).size();
     }
 
     /**
@@ -155,13 +176,39 @@ public class WebBasicAction {
     }
 
     /**
+     * 等待元素消失
+     * @param findBy
+     * @param value
+     * @param maxWaitTimeInSeconds
+     */
+    public void waitForElementNotPresence(String findBy, String value, String maxWaitTimeInSeconds) {
+        Function<WebDriver, Boolean> waitFn = new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                try {
+                    for (WebElement el : driver.findElements(getByWeb(findBy, value))) {
+                        if (el.isDisplayed()) {
+                            return false;
+                        }
+                    }
+                }
+                catch (Exception ex) {
+                    return true;
+                }
+                return true;
+            }
+        };
+        WebDriverWait wait = new WebDriverWait(driver, Long.parseLong(maxWaitTimeInSeconds));
+        wait.until(waitFn);
+    }
+
+    /**
      * 根据title切换窗口
      *
      * @param windowTitle
      * @return
      */
-    public boolean switchToWindow(String windowTitle) {
-        boolean flag = false;
+    public void switchToWindow(String windowTitle) {
         try {
             String currentHandle = driver.getWindowHandle();
             Set<String> handles = driver.getWindowHandles();
@@ -171,7 +218,6 @@ public class WebBasicAction {
                 else {
                     driver.switchTo().window(s);
                     if (driver.getTitle().contains(windowTitle)) {
-                        flag = true;
                         break;
                     } else
                         continue;
@@ -179,9 +225,7 @@ public class WebBasicAction {
             }
         } catch (NoSuchWindowException e) {
             log.error("未找到窗口{}", windowTitle);
-            flag = false;
         }
-        return flag;
     }
 
     /**
@@ -203,18 +247,12 @@ public class WebBasicAction {
     }
 
     /**
-     * 断言
+     * 查询短信验证码
      *
-     * @param expect
-     * @param acture
+     * @param phone
+     * @return
      */
-    public String equals(Object expect, Object acture) {
-        try {
-            assertEquals(expect, acture);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "断言成功";
+    public String queryMsgCode(Object phone) {
+        return BamsUtil.queryMsgCode((String) phone);
     }
-
 }

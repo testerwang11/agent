@@ -16,6 +16,8 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Created by jiangyitao.
  */
@@ -40,6 +42,10 @@ public class ActionDebugger {
         //System.out.println(appiumDriver.getPageSource());
         new TouchAction(appiumDriver).tap(PointOption.point(118, 513)).perform().release();
 
+        assertThat(2).isLessThan(3);
+        assertThat(2).isLessThanOrEqualTo(2);
+        assertThat("abc").startsWith("a");
+        assertThat("abc").endsWith("c");
 
         /*String str = "武汉市";
         String path = "new UiScrollable(new UiSelector().scrollable(true)).getChildByDescription(new UiSelector().className(\"android.widget.TextView\"), \"上海\", false)"; //获取滚动元素对象

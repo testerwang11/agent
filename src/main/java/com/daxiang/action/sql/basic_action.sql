@@ -1,6 +1,4 @@
-set @findbyAndValue = '{"name":"findBy","type":"String","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"text","description":"MobileBy.text"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"},{"value":"className","description":"MobileBy.className"},{"value":"name","description":"MobileBy.name"},{"value":"cssSelector","description":"MobileBy.cssSelector"},{"value":"linkText","description":"MobileBy.linkText"},{"value":"partialLinkText","description":"MobileBy.partialLinkText"},{"value":"tagName","description":"MobileBy.tagName"}]},{"name":"value","type":"String","description":"查找值"}';
-set @findbyAndValue2 = '{"name":"findBy","type":"String","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"text","description":"MobileBy.text"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"},{"value":"className","description":"MobileBy.className"},{"value":"name","description":"MobileBy.name"},{"value":"cssSelector","description":"MobileBy.cssSelector"},{"value":"linkText","description":"MobileBy.linkText"},{"value":"partialLinkText","description":"MobileBy.partialLinkText"},{"value":"tagName","description":"MobileBy.tagName"}]},{"name":"value","type":"String","description":"查找值"}';
-
+set @findbyAndValue = '{"name":"findBy","type":"String","description":"查找方式","possibleValues":[{"value":"id","description":"MobileBy.id"},{"value":"AccessibilityId","description":"MobileBy.AccessibilityId"},{"value":"xpath","description":"MobileBy.xpath"},{"value":"AndroidUIAutomator","description":"MobileBy.AndroidUIAutomator"},{"value":"iOSClassChain","description":"MobileBy.iOSClassChain"},{"value":"iOSNsPredicateString","description":"MobileBy.iOSNsPredicateString"},{"value":"image","description":"MobileBy.image"},{"value":"className","description":"MobileBy.className"},{"value":"name","description":"MobileBy.name"},{"value":"cssSelector","description":"MobileBy.cssSelector"},{"value":"linkText","description":"MobileBy.linkText"},{"value":"partialLinkText","description":"MobileBy.partialLinkText"},{"value":"tagName","description":"MobileBy.tagName"}]},{"name":"value","type":"String","description":"查找值"}';
 -- 1.executeJavaCode
 INSERT INTO `action` (
   `id`,
@@ -667,11 +665,11 @@ INSERT INTO `action` (
 VALUES
        (
            208,
-           '根据title切换窗口',
+           '切换窗口',
            '$.switchToWindow',
            3,
-           'Boolean',
-           '[{"name": "url", "type": "String","description": "url地址"}]'
+           'void',
+           '[{"name": "title", "type": "String", "description": "根据页面title切换"},{"name": "index", "type": "String", "description": "根据页面顺序切换从1开始"}]'
            );
 -- 209.
 INSERT INTO `action` (
@@ -690,4 +688,72 @@ VALUES
            3,
            'void',
            '[{"name": "windowTitle", "type": "String","description": "页面title"}]'
+           );
+-- 210.close关闭tap页
+INSERT INTO `action` (
+    `id`,
+    `name`,
+    `invoke`,
+    `platform`,
+		`return_value`
+		)
+VALUES
+       (
+           210,
+           '[Web]关闭标签页',
+           '$.closeTap',
+            '3',
+           'void'
+           );
+-- 211.runJS
+INSERT INTO `action` (
+    `id`,
+    `name`,
+    `invoke`,
+    `platform`,
+    `return_value`,
+    `params`
+    )
+VALUES
+       (
+           211,
+           '获取元素数量',
+           '$.getElementSize',
+           3,
+           'Integer',
+           '[{"name": "findBy", "type": "String", "description": "查找方式", "possibleValues": [{"value": "id", "description": "id"}, {"value": "xpath", "description": "xpath"},{"value": "className", "description": "className"}, {"value": "name", "description": "name"}, {"value": "cssSelector", "description": "cssSelector"}, {"value": "linkText", "description": "linkText"}, {"value": "partialLinkText", "description": "partialLinkText"}, {"value": "tagName", "description": "tagName"}]}, {"name": "value", "type": "String", "description": "查找值"}]'
+           );
+-- 212.等待元素消失
+INSERT INTO `action` (
+    `id`,
+    `name`,
+    `invoke`,
+    `platform`,
+    `return_value`,
+    `params`
+    )
+VALUES
+       (
+           212,
+           '[Web]等待元素消失',
+           '$.waitForElementNotPresence',
+            3,
+           'void',
+           REPLACE('[#,{"name":"maxWaitTimeInSeconds","type":"String","description":"最大等待时间(秒)"}]','#',@findbyAndValue)
+           );
+-- 213.日期加减
+INSERT INTO `action` (
+    `id`,
+    `name`,
+    `invoke`,
+    `return_value`,
+    `params`
+    )
+VALUES
+       (
+           213,
+           '获取时间',
+           '$.getDate',
+           'String',
+           '[{"name": "day", "type": "String","description": "当前日期为0，正数当前加多少天，负数反之"},{"name": "format", "type": "String", "description": "时间格式：yyyy-MM-dd HH:mm:ss,不传则返回时间戳"}]'
            );
