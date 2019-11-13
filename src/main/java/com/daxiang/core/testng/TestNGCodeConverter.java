@@ -39,7 +39,7 @@ public class TestNGCodeConverter {
      * 转换为testng代码
      */
     public String convert(String deviceId, String className, List<? extends Action> testcases,
-                          String ftlBasePackagePath, String ftlFileName) throws IOException, TemplateException {
+                          String ftlBasePackagePath, String ftlFileName) throws TestNGCodeConvertException {
         List<Action> actionTreeList = new ArrayList<>();
         actionTreeList.addAll(testcases);
 
@@ -91,7 +91,11 @@ public class TestNGCodeConverter {
         handleJavaImports();
         dataModel.put("javaImports", javaImports);
 
-        return FreemarkerUtil.process(ftlBasePackagePath, ftlFileName, dataModel);
+        try {
+            return FreemarkerUtil.process(ftlBasePackagePath, ftlFileName, dataModel);
+        } catch (IOException | TemplateException e) {
+            throw new TestNGCodeConvertException(e);
+        }
     }
 
     private void handleJavaImports() {
