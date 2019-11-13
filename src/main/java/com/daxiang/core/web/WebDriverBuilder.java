@@ -1,7 +1,6 @@
 package com.daxiang.core.web;
 
 import cn.hutool.system.SystemUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.App;
 import com.daxiang.api.MasterApi;
@@ -11,8 +10,10 @@ import com.daxiang.utils.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.*;
 import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
@@ -109,8 +110,14 @@ public class WebDriverBuilder {
                 .build();
         service.start();
 
-        RemoteWebDriver driver = new RemoteWebDriver(service.getUrl(), DesiredCapabilities.chrome());
+        DesiredCapabilities capabilities =  DesiredCapabilities.chrome();
+        capabilities.setAcceptInsecureCerts(false);
+        ChromeOptions options = new ChromeOptions();
+        options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
+        options.setAcceptInsecureCerts(false);
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
+        RemoteWebDriver driver = new RemoteWebDriver(service.getUrl(), capabilities);
         driver.manage().window().maximize();
 
         HttpCommandExecutor executor = (HttpCommandExecutor) driver.getCommandExecutor();
@@ -118,7 +125,6 @@ public class WebDriverBuilder {
         SessionId session_id = driver.getSessionId();
         driver.get("http://www.sijibao.com");
         String deviceId = session_id.toString();
-
         Device device = new Device();
         device.setStatus(Device.IDLE_STATUS);
         device.setCpuInfo("");
@@ -131,6 +137,7 @@ public class WebDriverBuilder {
         device.setSystemVersion(driver.getCapabilities().getVersion());
         device.setLastOnlineTime(new Date());
         device.setCreateTime(new Date());
+        device.setStatus(2);
         String imgUrl = MasterApi.getInstance().uploadFile(driver.getScreenshotAs(OutputType.FILE));
         device.setImgUrl(imgUrl);
 

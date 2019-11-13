@@ -50,6 +50,7 @@ public class BamsUtil {
 
     /**
      * 查询短信验证码
+     *
      * @param phone
      * @return
      */
@@ -80,6 +81,7 @@ public class BamsUtil {
 
     /**
      * 手机号添加至黑名单
+     *
      * @param phone
      * @return
      * @throws IOException

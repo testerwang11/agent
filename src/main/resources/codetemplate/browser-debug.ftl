@@ -6,7 +6,7 @@ public class ${className} {
 
     private RemoteWebDriver driver;
 
-    private WebBasicAction $;
+    private WebAction $;
     private Map<String, Object> vars;
 
     <#-- 全局变量 -->
@@ -19,7 +19,7 @@ public class ${className} {
     @BeforeSuite
     public void beforeSuite() throws Throwable {
         driver = new WebDevice().getBrowser();
-        $ = new WebBasicAction(driver);
+        $ = new WebAction(driver);
         vars = new HashMap();
     }
 

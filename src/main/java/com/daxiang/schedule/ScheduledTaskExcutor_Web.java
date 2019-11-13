@@ -34,7 +34,7 @@ public class ScheduledTaskExcutor_Web {
                 DeviceTestTaskExecutor_Web deviceTestTaskExecutor = new DeviceTestTaskExecutor_Web();
                 deviceTestTaskExecutor.commitTestTask(unStartDeviceTestTask);
             } else {
-                log.info("[无Web端自动化测试任务]");
+                //log.info("[无Web端自动化测试任务]");
             }
         }
     }

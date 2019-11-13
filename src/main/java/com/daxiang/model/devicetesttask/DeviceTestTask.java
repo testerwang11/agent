@@ -1,11 +1,9 @@
 package com.daxiang.model.devicetesttask;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.daxiang.model.action.Action;
 import com.daxiang.model.action.GlobalVar;
 import lombok.Data;
-
 import java.util.Date;
 import java.util.List;
 

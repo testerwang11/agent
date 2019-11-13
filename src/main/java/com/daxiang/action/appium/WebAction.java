@@ -2,29 +2,26 @@ package com.daxiang.action.appium;
 
 import com.daxiang.App;
 import com.daxiang.utils.BamsUtil;
+import com.daxiang.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
-
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by jiangyitao.
  */
 @Slf4j
-public class WebBasicAction2 extends BasicAction2 {
-
+public class WebAction extends BasicAction2 {
 
     private RemoteWebDriver driver;
 
-    public WebBasicAction2(RemoteWebDriver driver) {
+    public WebAction(RemoteWebDriver driver) {
         this.driver = driver;
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
@@ -32,6 +29,11 @@ public class WebBasicAction2 extends BasicAction2 {
 
     private By getByWeb(String findBy, String value) {
         By by;
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         switch (findBy) {
             case "id":
                 by = By.id(value);
@@ -84,8 +86,9 @@ public class WebBasicAction2 extends BasicAction2 {
      * @param value
      */
     public void click(Object findBy, Object value) {
-        new WebDriverWait(driver, Long.parseLong(App.getProperty("timeout")))
-                .until(ExpectedConditions.elementToBeClickable(getByWeb((String) findBy, (String) value))).click();
+        /*new WebDriverWait(driver, Long.parseLong(App.getProperty("timeout")))
+                .until(ExpectedConditions.elementToBeClickable(getByWeb((String) findBy, (String) value))).click();*/
+        driver.findElement(getByWeb((String) findBy, (String) value)).click();
     }
 
     /**
@@ -95,7 +98,7 @@ public class WebBasicAction2 extends BasicAction2 {
      * @param value
      */
     public WebElement sendKeys(String findBy, String value, String content) {
-        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
+        //waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         WebElement element = driver.findElement(getByWeb(findBy, value));
         element.clear();
         element.sendKeys(content);
@@ -139,7 +142,7 @@ public class WebBasicAction2 extends BasicAction2 {
      * @return
      */
     public String getElementValue(Object findBy, Object value, Object attribute) {
-        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
+        //waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         WebElement element = driver.findElement(getByWeb((String) findBy, (String) value));
         if (((String) attribute).equalsIgnoreCase("text")) {
             return element.getText();
@@ -155,7 +158,7 @@ public class WebBasicAction2 extends BasicAction2 {
      * @return
      */
     public Integer getElementSize(Object findBy, Object value) {
-        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
+        //waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         return driver.findElements(getByWeb((String) findBy, (String) value)).size();
     }
 
@@ -177,6 +180,7 @@ public class WebBasicAction2 extends BasicAction2 {
 
     /**
      * 等待元素消失
+     *
      * @param findBy
      * @param value
      * @param maxWaitTimeInSeconds
@@ -191,8 +195,7 @@ public class WebBasicAction2 extends BasicAction2 {
                             return false;
                         }
                     }
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     return true;
                 }
                 return true;
@@ -208,21 +211,33 @@ public class WebBasicAction2 extends BasicAction2 {
      * @param windowTitle
      * @return
      */
-    public void switchToWindow(String windowTitle) {
+    public void switchToWindow(String windowTitle, String index) {
+        int num = Integer.parseInt(index);
         try {
             String currentHandle = driver.getWindowHandle();
             Set<String> handles = driver.getWindowHandles();
+            int i = 1;
             for (String s : handles) {
-                if (s.equals(currentHandle))
-                    continue;
-                else {
-                    driver.switchTo().window(s);
-                    if (driver.getTitle().contains(windowTitle)) {
-                        break;
-                    } else
+                if (!StringUtil.isEmpty(windowTitle)) {
+                    //根据title切换
+                    if (s.equals(currentHandle))
                         continue;
+                    else {
+                        driver.switchTo().window(s);
+                        if (driver.getTitle().contains(windowTitle)) {
+                            break;
+                        } else
+                            continue;
+                    }
+                } else {
+                    if (num == i) {
+                        driver.switchTo().window(s);
+                        break;
+                    }
+                    i++;
                 }
             }
+
         } catch (NoSuchWindowException e) {
             log.error("未找到窗口{}", windowTitle);
         }
@@ -244,6 +259,14 @@ public class WebBasicAction2 extends BasicAction2 {
      */
     public void closeTap() {
         driver.close();
+        Set<String> handles = driver.getWindowHandles();
+        int pageNum = handles.size();
+        //判断是否有多个页面，如果有，自动返回前一个页面
+        if (pageNum > 0) {
+            for (String s : handles) {
+                driver.switchTo().window(s);
+            }
+        }
     }
 
     /**

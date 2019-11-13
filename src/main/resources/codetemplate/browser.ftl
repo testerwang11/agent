@@ -4,7 +4,7 @@
 
 public class ${className} extends BaseUITest {
 
-    private WebBasicAction $;
+    private WebAction $;
     private Map<String, Object> vars;
 
     <#-- 全局变量 -->
@@ -17,7 +17,7 @@ public class ${className} extends BaseUITest {
     @BeforeSuite
     public void beforeSuite() throws Throwable {
         driver = super.startDriver();
-        $ = new WebBasicAction(driver);
+        $ = new WebAction(driver);
         vars = new HashMap();
     }
 

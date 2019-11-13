@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -103,8 +102,9 @@ public class TestNGCodeConverter {
         javaImports.add("import org.testng.SkipException;");
         javaImports.add("import com.daxiang.core.testng.listener.TestCaseTestListener;");
         javaImports.add("import com.daxiang.core.testng.listener.DebugActionTestListener;");
-        javaImports.add("import com.daxiang.action.appium.BasicAction;");
-        javaImports.add("import com.daxiang.action.appium.WebBasicAction;");
+        javaImports.add("import com.daxiang.action.appium.BasicAction2;");
+        javaImports.add("import com.daxiang.action.appium.WebAction;");
+        javaImports.add("import com.daxiang.action.appium.MobileAction;");
         javaImports.add("import org.openqa.selenium.*;");
         javaImports.add("import java.util.*;");
         javaImports.add("import static org.assertj.core.api.Assertions.*;");

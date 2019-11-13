@@ -5,7 +5,7 @@
 public class ${className} {
 
     private AppiumDriver driver;
-    private BasicAction $;
+    private MobileAction $;
     private Map<String, Object> vars;
 
     <#-- 全局变量 -->
@@ -18,7 +18,7 @@ public class ${className} {
     @BeforeSuite
     public void beforeSuite() throws Throwable {
         driver = MobileDeviceHolder.get("${deviceId}").getAppiumDriver();
-        $ = new BasicAction(driver);
+        $ = new MobileAction(driver);
         vars = new HashMap();
     }
 

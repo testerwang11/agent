@@ -29,14 +29,14 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class MobileAction2 extends BasicAction2 {
+public class MobileAction extends BasicAction2 {
     public static final int EXECUTE_JAVA_CODE_ID = 1;
 
     private AppiumDriver driver;
     private int screenHeight;
     private int screenWidth;
 
-    public MobileAction2(AppiumDriver driver) {
+    public MobileAction(AppiumDriver driver) {
         this.driver = driver;
         MobileDevice mobileDevice = MobileDeviceHolder.getMobileDeviceByAppiumDriver(driver);
         if (mobileDevice == null) {
