@@ -31,6 +31,8 @@ public class DebugActionTestListener extends TestListenerAdapter {
         msgList.add(msg);
     }
 
+
+
     @Override
     public void onTestFailure(ITestResult tr) {
         failMsg.set(tr.getThrowable().getMessage());

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 
 /**
@@ -89,15 +88,6 @@ public class AgentStartRunner implements ApplicationRunner {
         if (first < 1 || (first == 1 && middle < 15)) {
             throw new Error("appium版本必须>=1.15.0");
         }
-
-        // 是否配置了aapt
-        String aaptVersion = Terminal.execute("aapt v");
-        if (!StringUtils.isEmpty(aaptVersion) && aaptVersion.startsWith("Android")) {
-            System.setProperty("aapt", "true");
-        } else {
-            System.setProperty("aapt", "false");
-        }
-
         // ffmpeg
         Terminal.execute("ffmpeg -version");
             // 是否配置了aapt

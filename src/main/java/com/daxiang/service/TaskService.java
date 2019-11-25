@@ -1,12 +1,9 @@
 package com.daxiang.service;
 
-import cn.hutool.cron.CronUtil;
-import cn.hutool.cron.task.Task;
 import com.daxiang.api.MasterApi;
 import com.daxiang.core.DeviceTestTaskExecutor_Web;
 import com.daxiang.core.MobileDevice;
 import com.daxiang.core.MobileDeviceHolder;
-import com.daxiang.model.Response;
 import com.daxiang.model.devicetesttask.DeviceTestTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,54 +54,5 @@ public class TaskService {
         }
     }
 
-    /**
-     * 启动任务
-     */
-    public void startJob() {
-        log.info("启动定时任务");
-        CronUtil.start(true);
-    }
 
-    /**
-     * 添加任务
-     *
-     * @param cron
-     * @param type
-     */
-    public Response add(String cron, int type) {
-        log.info("添加任务" + cron + ";" + type);
-        String taskId;
-        if (type == 3) {
-            taskId = CronUtil.schedule(cron, new Task() {
-                @Override
-                public void execute() {
-                    addWeb();
-                }
-            });
-        } else {
-            taskId = CronUtil.schedule(cron, new Task() {
-                @Override
-                public void execute() {
-                    addMobileTask();
-                }
-            });
-        }
-        return Response.success(taskId);
-    }
-
-    /**
-     * 删除任务
-     *
-     * @param id
-     */
-    public Response del(String id) {
-        log.info("删除任务");
-        try {
-            CronUtil.remove(id);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            Response.fail("删除任务失败");
-        }
-        return Response.success("{}任务已删除", id);
-    }
 }

@@ -47,8 +47,8 @@ public class AndroidDriverBuilder implements AppiumDriverBuilder {
             capabilities.setCapability(AndroidMobileCapabilityType.CHROMEDRIVER_EXECUTABLE, chromedriverFilePath.get());
         }
 
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, APP_PACKAGE);
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, APP_ACTIVITY);
+        //capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, APP_PACKAGE);
+        //capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, APP_ACTIVITY);
         capabilities.setCapability(AndroidMobileCapabilityType.NO_SIGN, true);
 
         ChromeOptions options = new ChromeOptions();
