@@ -42,7 +42,7 @@ public class ActionDebugger2 {
 
 
     private void print(Object o) {
-        DebugActionTestListener.printMsg.set(String.valueOf(o));
+        //DebugActionTestListener.printMsg.set(String.valueOf(o));
     }
 
     /**

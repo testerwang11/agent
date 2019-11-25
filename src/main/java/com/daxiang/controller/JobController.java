@@ -23,20 +23,20 @@ public class JobController {
     @Autowired
     private TaskService taskService;
 
-    /**
+/*    *//**
      * 添加任务
-     */
+     *//*
     @PostMapping("/add")
     public Response add(@Valid @RequestBody JobRequest request) {
         return taskService.add(request.getCron(), request.getType());
     }
 
-    /**
+    *//**
      * 删除任务
      * @param request
      * @return
-     */
+     *//*
     public Response del(@Valid @RequestBody JobRequest request) {
         return taskService.del(request.getId());
-    }
+    }*/
 }

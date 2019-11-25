@@ -6,6 +6,7 @@ import com.daxiang.core.testng.listener.TestCaseTestListenerWeb;
 import com.daxiang.model.Response;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.testng.TestNG;
 
 import java.io.IOException;
@@ -54,12 +55,12 @@ public class TestNGRunner {
             return Response.fail(failMsg);
         } else {
             // 运行成功
-            String printMsg = DebugActionTestListener.printMsg.get();
-            DebugActionTestListener.printMsg.remove();
-            if (StringUtils.isEmpty(printMsg)) {
-                printMsg = "执行成功";
+            List<String> printMsgList = DebugActionTestListener.printMsgList.get();
+            DebugActionTestListener.printMsgList.remove();
+            if (CollectionUtils.isEmpty(printMsgList)) {
+                printMsgList = Arrays.asList("执行成功");
             }
-            return Response.success(printMsg);
+            return Response.success(printMsgList);
         }
     }
 
