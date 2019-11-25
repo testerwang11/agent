@@ -556,7 +556,7 @@ VALUES
 					 '$.sendKeys',
 					 3,
 					 'WebElement',
-					 '[{"name": "findBy", "type": "String", "description": "查找方式", "possibleValues": [{"value": "id", "description": "id"}, {"value": "xpath", "description": "xpath"},{"value": "className", "description": "className"}, {"value": "name", "description": "name"}, {"value": "cssSelector", "description": "cssSelector"}, {"value": "linkText", "description": "linkText"}, {"value": "partialLinkText", "description": "partialLinkText"}, {"value": "tagName", "description": "tagName"}]}, {"name": "value", "type": "String", "description": "查找值"},{"name":"content","type":"String","description":"输入内容"}]'
+					 '[{"name": "findBy", "type": "String", "description": "查找方式", "possibleValues": [{"value": "id", "description": "id"}, {"value": "xpath", "description": "xpath"},{"value": "className", "description": "className"}, {"value": "name", "description": "name"}, {"value": "cssSelector", "description": "cssSelector"}, {"value": "linkText", "description": "linkText"}, {"value": "partialLinkText", "description": "partialLinkText"}, {"value": "tagName", "description": "tagName"}]}, {"name": "value", "type": "String", "description": "查找值"},{"name":"content","type":"String","description":"输入内容"},{"name": "unitPrice", "type": "String","description": "货物单价（为空则按货源价格计算）"}]'
 					 );
 
 
@@ -757,3 +757,56 @@ VALUES
            'String',
            '[{"name": "day", "type": "String","description": "当前日期为0，正数当前加多少天，负数反之"},{"name": "format", "type": "String", "description": "时间格式：yyyy-MM-dd HH:mm:ss,不传则返回时间戳"}]'
            );
+-- 213.下拉框选择
+INSERT INTO `action` (
+		`id`,
+		`name`,
+		`invoke`,
+		`platform`,
+		`return_value`,
+		`params`
+		)
+VALUES
+			 (
+					 213,
+					 '[Web]下拉选择框',
+					 '$.selectElement',
+					 3,
+					 'void',
+						REPLACE('[#,{"name":"text","type":"String","description":"文本值"}]','#',@findbyAndValue)
+					 );
+-- 215.鼠标悬停
+INSERT INTO `action` (
+		`id`,
+		`name`,
+		`invoke`,
+		`platform`,
+		`return_value`,
+		`params`
+		)
+VALUES
+			 (
+					 216,
+					 '[Web]鼠标悬停',
+					 '$.moserOver',
+					 3,
+					 'void',
+					 '[{"name": "findBy", "type": "String", "description": "查找方式", "possibleValues": [{"value": "id", "description": "id"}, {"value": "xpath", "description": "xpath"},{"value": "className", "description": "className"}, {"value": "name", "description": "name"}, {"value": "cssSelector", "description": "cssSelector"}, {"value": "linkText", "description": "linkText"}, {"value": "partialLinkText", "description": "partialLinkText"}, {"value": "tagName", "description": "tagName"}]}, {"name": "value", "type": "String", "description": "查找值"}]'
+					 );
+
+-- 216.物流下单
+INSERT INTO `action` (
+		`id`,
+		`name`,
+		`invoke`,
+		`return_value`,
+		`params`
+		)
+VALUES
+			 (
+					 216,
+					 '物流下单',
+					 '$.wucheOrder',
+					 'String',
+					 '[{"name": "stockOrder", "type": "String","description": "货源编码"},{"name": "agentCode", "type": "String","description": "经纪人编码(不是手机号)"},{"name": "deficit", "type": "String","description": "亏吨(正数涨吨，负数亏吨)"},{"name": "unitPrice", "type": "String","description": "货物单价（为空则使用货源价格）"},{"name": "driverPhone", "type": "String","description": "司机手机号"},{"name": "step", "type": "String","description": "运单状态:1.企业确认 2.卸货签到 3.签收 4.协商 5.复核"}]'
+					 );

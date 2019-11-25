@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 public class BaseUITest {
 
     public RemoteWebDriver driver;
+
     public String vidoName = "chrome_" + DateUtil.beginOfSecond(new DateTime());
     public RemoteWebDriver startDriver() {
         try {

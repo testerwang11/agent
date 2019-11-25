@@ -1,14 +1,18 @@
 package com.daxiang.action.appium;
 
 import com.daxiang.App;
+import com.daxiang.model.action.Action;
 import com.daxiang.utils.BamsUtil;
 import com.daxiang.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
+
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -163,6 +167,35 @@ public class WebAction extends BasicAction2 {
     }
 
     /**
+     * 通过文本选择下拉框
+     * @param findBy
+     * @param value
+     * @param text
+     */
+    public void selectElement(Object findBy, Object value, Object text) {
+        //new Select(driver.findElement(getByWeb((String) findBy, (String) value))).selectByVisibleText((String) text);
+        WebElement dropdown = driver.findElement(getByWeb((String) findBy, (String) value));
+        //dropdown.click();
+        List<WebElement> options = dropdown.findElements(By.tagName("li"));
+        for (WebElement option : options) {
+            if (option.getText().equals((String) text)) {
+                option.click();
+                break;
+            }
+        }
+    }
+
+    /**
+     * 鼠标悬停
+     * @param findBy
+     * @param value
+     */
+    public void moserOver(Object findBy, Object value) {
+        org.openqa.selenium.interactions.Actions action = new org.openqa.selenium.interactions.Actions(driver);
+        action.moveToElement(driver.findElement(getByWeb((String) findBy, (String) value))).perform();
+    }
+
+    /**
      * 等待元素出现
      *
      * @param findBy
@@ -278,4 +311,6 @@ public class WebAction extends BasicAction2 {
     public String queryMsgCode(Object phone) {
         return BamsUtil.queryMsgCode((String) phone);
     }
+
+
 }

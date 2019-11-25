@@ -276,7 +276,7 @@ public class MobileAction extends BasicAction2 {
 
         log.info("滑动屏幕: ({},{}) -> ({},{})", startX, startY, endX, endY);
         new TouchAction(driver)
-                .longPress(PointOption.point(startX, startY))
+                .press(PointOption.point(startX, startY))
                 .waitAction(WaitOptions.waitOptions(Duration.ZERO))
                 .moveTo(PointOption.point(endX, endY))
                 .release()

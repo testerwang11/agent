@@ -1,6 +1,5 @@
 package com.daxiang.api;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.App;
 import com.daxiang.model.Device;
@@ -22,7 +21,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import java.io.File;
 import java.util.List;
 import java.util.Map;
