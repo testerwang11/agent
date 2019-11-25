@@ -1,17 +1,14 @@
 package com.daxiang.action.appium;
 
 import com.daxiang.App;
-import com.daxiang.model.action.Action;
 import com.daxiang.utils.BamsUtil;
 import com.daxiang.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.util.Assert;
-
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -90,8 +87,8 @@ public class WebAction extends BasicAction2 {
      * @param value
      */
     public void click(Object findBy, Object value) {
-        /*new WebDriverWait(driver, Long.parseLong(App.getProperty("timeout")))
-                .until(ExpectedConditions.elementToBeClickable(getByWeb((String) findBy, (String) value))).click();*/
+        new WebDriverWait(driver, Long.parseLong(App.getProperty("timeout")))
+                .until(ExpectedConditions.elementToBeClickable(getByWeb((String) findBy, (String) value))).click();
         driver.findElement(getByWeb((String) findBy, (String) value)).click();
     }
 
@@ -102,7 +99,7 @@ public class WebAction extends BasicAction2 {
      * @param value
      */
     public WebElement sendKeys(String findBy, String value, String content) {
-        //waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
+        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         WebElement element = driver.findElement(getByWeb(findBy, value));
         element.clear();
         element.sendKeys(content);
@@ -146,7 +143,7 @@ public class WebAction extends BasicAction2 {
      * @return
      */
     public String getElementValue(Object findBy, Object value, Object attribute) {
-        //waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
+        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         WebElement element = driver.findElement(getByWeb((String) findBy, (String) value));
         if (((String) attribute).equalsIgnoreCase("text")) {
             return element.getText();
@@ -162,7 +159,7 @@ public class WebAction extends BasicAction2 {
      * @return
      */
     public Integer getElementSize(Object findBy, Object value) {
-        //waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
+        waitForElementPresence((String) findBy, (String) value, App.getProperty("timeout"));
         return driver.findElements(getByWeb((String) findBy, (String) value)).size();
     }
 
@@ -175,7 +172,6 @@ public class WebAction extends BasicAction2 {
     public void selectElement(Object findBy, Object value, Object text) {
         //new Select(driver.findElement(getByWeb((String) findBy, (String) value))).selectByVisibleText((String) text);
         WebElement dropdown = driver.findElement(getByWeb((String) findBy, (String) value));
-        //dropdown.click();
         List<WebElement> options = dropdown.findElements(By.tagName("li"));
         for (WebElement option : options) {
             if (option.getText().equals((String) text)) {
@@ -311,6 +307,4 @@ public class WebAction extends BasicAction2 {
     public String queryMsgCode(Object phone) {
         return BamsUtil.queryMsgCode((String) phone);
     }
-
-
 }

@@ -113,6 +113,7 @@ public class WebDriverBuilder {
         DesiredCapabilities capabilities =  DesiredCapabilities.chrome();
         capabilities.setAcceptInsecureCerts(false);
         ChromeOptions options = new ChromeOptions();
+        //避免阻塞浏览器
         options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
         options.setAcceptInsecureCerts(false);
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
